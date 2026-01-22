@@ -336,7 +336,7 @@ local Workspace = game:GetService("Workspace")
 local Window = WindUI:CreateWindow({
 	Title = "Premium",
 	Icon = "star",
-	Author = "Vxnity Team x Ktc Hub| discord.gg/XEg5aGfvU ",
+	Author = "Vxnity Team x Ktc Hub  . discord.gg/XEg5aGfvU ",
 	Folder = "KtcHub",
 	Size = UDim2.fromOffset(625, 440),
 	Transparent = true,
@@ -1425,24 +1425,159 @@ do
 end
 
 do
-	local SectionOther = createSection(TabMisc, "Other")
-	addInput(SectionOther, "Player FOV", "Enter FOV", "", function(value)
-		local fov = tonumber(value)
-		if fov then
-			Workspace.CurrentCamera.FieldOfView = fov
-			notify("Info", "FOV set to " .. value)
-		end
-	end)
 
-	addInput(SectionOther, "Brightning Size", "Enter Brightness", "", function(value)
-		local brightness = tonumber(value)
-		if brightness then
-			Lighting.Brightness = brightness
-			notify("Info", "Brightness set to " .. value)
-		end
-	end)
+    local InfDribbleHelperEnabled = false
+    local AutoInfEnabled = false
+    local ManualOverrideEnabled = false
+    local AutoInfDistance = 2.5
+    
+    -- Conexiones para poder desconectar las funciones cuando sea necesario
+    local InfDribbleHelperConnection = nil
+    local AutoInfConnection = nil
+    
+    -- funcion mejorada 
+    local function getBall()
+        -- Intenta obtener el balón desde múltiples distancias 
+
+        local TPSSystem = Workspace:FindFirstChild("TPSSystem")
+        if TPSSystem then
+            return TPSSystem:FindFirstChild("TPS")
+        end
+        
+        -- Búsqueda alternativa si la ruta principal falla
+        return Workspace:FindFirstChild("TPS", true)
+    end
+    
+    -- Crear la sección en la pestaña Misc
+    local SectionInfDribble = createSection(TabMisc, "Inf Dribble Helper")
+    
+    -- Toggle para Inf Fast Helper
+    addToggle(
+        SectionInfDribble,
+        "Inf Fast Helper",
+        false,
+        "Ayuda a hacer el dribble infinito más rápido sin perderka",
+        function(value)
+            InfDribbleHelperEnabled = value
+            if value then
+                -- Desconectar conexión anterior si existe
+                if InfDribbleHelperConnection then InfDribbleHelperConnection:Disconnect() end
+                
+               
+                InfDribbleHelperConnection = RunService.Heartbeat:Connect(function()
+                    local Character = Players.LocalPlayer.Character
+                    if not Character then return end
+                    
+                    local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
+                    local TPS = getBall()
+                    
+                    if HumanoidRootPart and TPS then
+                        local distance = (HumanoidRootPart.Position - TPS.Position).Magnitude
+                        
+                        --- solo ejecutar si está cerca del balón
+                        if distance < 4 then
+                            -- Ajuste de velocidad para dribble más rápido 
+                            local humanoid = Character:FindFirstChildOfClass("Humanoid")
+                            if humanoid and humanoid.WalkSpeed < 25 then
+                                humanoid.WalkSpeed = 25
+                            end
+                            
+                            --  balón con mejor control
+                            if TPS.Velocity.Magnitude < 0.5 then
+                                TPS.Velocity = TPS.Velocity + Vector3.new(0, 0, 0.5)
+                            end
+                        end
+                    end
+                end)
+                notify("Inf Fast Helper", "Activado - InfDribble más rápido")
+            else
+                if InfDribbleHelperConnection then InfDribbleHelperConnection:Disconnect() end
+                notify("Inf Fast Helper", "Desactivado")
+            end
+        end
+    )
+    
+    -- Toggle para Enabled AutoInf
+    addToggle(
+        SectionInfDribble,
+        "Enabled AutoInf",
+        false,
+        "Se mantiene pegado al balón y se mueve con él",
+        function(value)
+            AutoInfEnabled = value
+            if value then
+                -- Desconectar conexión anterior si existe
+                if AutoInfConnection then AutoInfConnection:Disconnect() end
+                
+                -- Usar Heartbeat para mejor rendimiento
+                AutoInfConnection = RunService.Heartbeat:Connect(function()
+                    local Character = Players.LocalPlayer.Character
+                    if not Character then return end
+                    
+                    local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
+                    local TPS = getBall()
+                    
+                    if HumanoidRootPart and TPS then
+                        -- Calcula la distancia entre el jugador y el balón
+                        local distance = (HumanoidRootPart.Position - TPS.Position).Magnitude
+                        
+                        -- Verificar si el usuario está intentando moverse manualmente
+                        local isMovingManually = false
+                        if ManualOverrideEnabled then
+                            local humanoid = Character:FindFirstChildOfClass("Humanoid")
+                            if humanoid and humanoid.MoveDirection.Magnitude > 0.1 then
+                                isMovingManually = true
+                            end
+                        end
+                        
+                        -- Solo actúa si no está moviéndose manualmente y está a una distancia razonable xd
+                        if not isMovingManually and distance > AutoInfDistance and distance < 8 then
+                            -- Calcula la dirección hacia el balón
+                            local direction = (TPS.Position - HumanoidRootPart.Position).Unit
+                            
+                            -- Ajuste de velocidad optimizado
+                            local speed = math.min(distance * 0.6, 4)
+                            
+                            -- Aplica el movimiento hacia el balón 
+                            local targetPosition = TPS.Position - (direction * AutoInfDistance)
+                            HumanoidRootPart.Velocity = HumanoidRootPart.Velocity * 0.7 + (targetPosition - HumanoidRootPart.Position).Unit * speed * 0.3
+                        elseif distance <= AutoInfDistance then
+                            -- Si está muy cerca, reduce la velocidad  para no sobrepasar
+                            HumanoidRootPart.Velocity = HumanoidRootPart.Velocity * 0.8
+                        end
+                    end
+                end)
+                notify("AutoInf", "Activado - Staying close to the ball ")
+            else
+                if AutoInfConnection then AutoInfConnection:Disconnect() end
+                notify("AutoInf", "Desactivado")
+            end
+        end
+    )
+    
+    --   
+    addInput(SectionInfDribble, "AutoInf Distance", "Minimum distance to the ball  (1-5)", "2.5", function(value)
+        local n = tonumber(value)
+        if n then
+            if n > 5 then n = 5 end
+            if n < 1 then n = 1 end
+            AutoInfDistance = n
+            notify("AutoInf", "Distancia ajustada a " .. n)
+        end
+    end)
+    
+    -- para permitir control manual
+    addToggle(
+        SectionInfDribble,
+        "Manual Override",
+        false,
+        "Allows manual movement when AutoInf is active ",
+        function(value)
+            ManualOverrideEnabled = value
+            notify("AutoInf", "Manual control " .. (value and "activado" or "desactivado"))
+        end
+    )
 end
-
 
 
 do
