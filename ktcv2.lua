@@ -1686,7 +1686,7 @@ if UserInputService.TouchEnabled then
 	local IconText = Instance.new("TextLabel")
 	IconText.Size = UDim2.fromScale(1, 1)
 	IconText.BackgroundTransparency = 1
-	IconText.Text = "$"
+	IconText.Text = "☠"
 	IconText.TextColor3 = Color3.fromRGB(0, 170, 255)
 	IconText.TextSize = 24
 	IconText.Font = Enum.Font.GothamBold
