@@ -1370,7 +1370,7 @@ do
 					if ball and hrp then
 						local dist = (ball.Position - hrp.Position).Magnitude
 						-- Only activate if ball is very close (dribbling range)
-						if dist < 4 then 
+						if dist < 3 then 
 							if sethiddenproperty then
 								pcall(sethiddenproperty, ball, "NetworkIsSleeping", false)
 							end
@@ -1413,238 +1413,17 @@ do
 		function(value)
 			if value then
 				AutoReactRange = 4.5
-				ReactVelocity = 180
+				ReactVelocity = 198
 				notify("Reacts", "Kenyah React Config Loaded")
 			else
 				AutoReactRange = 4.4
-				ReactVelocity = 180
+				ReactVelocity = 198
 				notify("Reacts", "Kenyah React Disabled (Reset to Default)")
 			end
 		end
 	)
 end
 
-do
-    
-    local InfDribbleHelperEnabled = false
-    local AutoInfEnabled = false
-    local ManualOverrideEnabled = false
-    local AutoInfDistance = 2.5
-    local CollisionBallEnabled = false
-    local OriginalBallCollision = nil
-    local BypassEnabled = true
-    
-    
-    local InfDribbleHelperConnection = nil
-    local AutoInfConnection = nil
-    local BypassConnection = nil
-    
-    
-    local OriginalMethods = {}
-    local BypassedMethods = {}
-    
-    local function setupAntiCheatBypass()
-        
-        OriginalMethods.FireServer = Instance.new("RemoteEvent").FireServer
-        OriginalMethods.InvokeServer = Instance.new("RemoteFunction").InvokeServer
-        
-        
-        BypassedMethods.FireServer = function(self, ...)
-            
-            local args = {...}
-            if BypassEnabled and (tostring(self.Name):find("Kick") or tostring(self.Name):find("Ban") or tostring(self.Name):find("Report")) then
-                return nil
-            end
-            return OriginalMethods.FireServer(self, unpack(args))
-        end
-        
-        BypassedMethods.InvokeServer = function(self, ...)
-            
-            local args = {...}
-            if BypassEnabled and (tostring(self.Name):find("Kick") or tostring(self.Name):find("Ban") or tostring(self.Name):find("Report")) then
-                return nil
-            end
-            return OriginalMethods.InvokeServer(self, unpack(args))
-        end
-        
-    
-        for _, remote in pairs(Workspace:GetDescendants()) do
-            if remote:IsA("RemoteEvent") then
-                remote.FireServer = BypassedMethods.FireServer
-            elseif remote:IsA("RemoteFunction") then
-                remote.InvokeServer = BypassedMethods.InvokeServer
-            end
-        end
-        
-        
-        BypassConnection = Workspace.DescendantAdded:Connect(function(descendant)
-            if descendant:IsA("RemoteEvent") then
-                descendant.FireServer = BypassedMethods.FireServer
-            elseif descendant:IsA("RemoteFunction") then
-                descendant.InvokeServer = BypassedMethods.InvokeServer
-            end
-        end)
-        
-        return true
-    end
-    
-    
-    local function getBall()
-    
-        local TPSSystem = Workspace:FindFirstChild("TPSSystem")
-        if TPSSystem then
-            return TPSSystem:FindFirstChild("TPS")
-        end
-        return Workspace:FindFirstChild("TPS", true)
-    end
-    
-    
-    local function performAutoDribble(character, ball)
-        local HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        
-        if not HumanoidRootPart or not humanoid or not ball then return end
-        
-        
-        local randomMovement = math.random(1, 4)
-        local distance = (HumanoidRootPart.Position - ball.Position).Magnitude
-        
-        if distance < 8 then
-            
-            humanoid.WalkSpeed = 18 + math.random(-2, 2)
-            
-            
-            if randomMovement == 1 then
-                
-                local direction = HumanoidRootPart.CFrame.LookVector
-                local sideDirection = HumanoidRootPart.CFrame.RightVector * math.sin(tick() * 2) * 0.3
-                ball.Velocity = ball.Velocity * 0.8 + (direction + sideDirection) * 3
-                
-            elseif randomMovement == 2 then
-                
-                local sideDirection = HumanoidRootPart.CFrame.RightVector * (math.random() > 0.5 and 1 or -1)
-                ball.Velocity = ball.Velocity * 0.8 + sideDirection * 2.5
-                
-            elseif randomMovement == 3 then
-                
-                local direction = HumanoidRootPart.CFrame.LookVector + HumanoidRootPart.CFrame.RightVector * (math.random() > 0.5 and 0.5 or -0.5)
-                ball.Velocity = ball.Velocity * 0.8 + direction.Unit * 2.8
-                
-            else
-                
-                local direction = HumanoidRootPart.CFrame.LookVector
-                local acceleration = math.sin(tick() * 1.5) * 0.5 + 0.5
-                ball.Velocity = ball.Velocity * 0.7 + direction * 2 * acceleration
-            end
-            
-            
-            if ball.Velocity.Y < 0.5 then
-                ball.Velocity = ball.Velocity + Vector3.new(0, 0.3 + math.random() * 0.2, 0)
-            end
-        end
-    end
-    
-    
-    local SectionInfDribble = createSection(TabMisc, "Inf Dribble Helper")
-    
-    
-    addToggle(
-        SectionInfDribble,
-        "Anti-Cheat Bypass",
-        true,
-        "Avoid the TPS anti-cheat feature. ",
-        function(value)
-            BypassEnabled = value
-            if value then
-                setupAntiCheatBypass()
-                notify("Bypass", "Anti-Cheat Bypass Activado")
-            else
-                
-                if BypassConnection then BypassConnection:Disconnect() end
-                for _, remote in pairs(Workspace:GetDescendants()) do
-                    if remote:IsA("RemoteEvent") then
-                        remote.FireServer = OriginalMethods.FireServer
-                    elseif remote:IsA("RemoteFunction") then
-                        remote.InvokeServer = OriginalMethods.InvokeServer
-                    end
-                end
-                notify("Bypass", "Anti-Cheat Bypass Desactivado")
-            end
-        end
-    )
-    
-    
-    addToggle(
-        SectionInfDribble,
-        "Inf Fast Helper",
-        false,
-        "It helps to make the infinite dribble faster without losing it ",
-        function(value)
-            InfDribbleHelperEnabled = value
-            if value then
-                
-                if InfDribbleHelperConnection then InfDribbleHelperConnection:Disconnect() end
-                
-                
-                InfDribbleHelperConnection = RunService.Heartbeat:Connect(function()
-                    local Character = Players.LocalPlayer.Character
-                    if not Character then return end
-                    
-                    local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
-                    local TPS = getBall()
-                    
-                    if HumanoidRootPart and TPS then
-                        local distance = (HumanoidRootPart.Position - TPS.Position).Magnitude
-                        
-                     
-                        if distance < 4 then
-                            
-                            local humanoid = Character:FindFirstChildOfClass("Humanoid")
-                            if humanoid and humanoid.WalkSpeed < 25 then
-                                humanoid.WalkSpeed = 25
-                            end
-                            
-                            
-                            if TPS.Velocity.Magnitude < 0.5 then
-                                TPS.Velocity = TPS.Velocity + Vector3.new(0, 0, 0.5)
-                            end
-                        end
-                    end
-                end)
-                notify("Inf Fast Helper", "Activado - FastDribble más rápido")
-            else
-                if InfDribbleHelperConnection then InfDribbleHelperConnection:Disconnect() end
-                notify("Inf Fast Helper", "Desactivado")
-            end
-        end
-    )
-    
-
-    addToggle(
-        SectionInfDribble,
-        "Enabled AutoInf",
-        false,
-        "Se mantiene pegado al balón y se mueve con él",
-        function(value)
-            AutoInfEnabled = value
-            if value then
-                
-                if AutoInfConnection then AutoInfConnection:Disconnect() end
-                
-                
-                AutoInfConnection = RunService.Heartbeat:Connect(function()
-                    local Character = Players.LocalPlayer.Character
-                    if not Character then return end
-                    
-                    local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
-                    local TPS = getBall()
-                    
-                    if HumanoidRootPart and TPS then
-                        
-                        if BypassEnabled then
-                            performAutoDribble(Character, TPS)
-                        end
-                        
                         
 
 do
