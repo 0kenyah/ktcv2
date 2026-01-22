@@ -289,7 +289,7 @@ if MainContainer then
 	local LoadingBarBG = MainContainer:FindFirstChild("LoadingBarBG")
 	
 	if Title then Title.Text = "Select Script" end
-	if SubTitle then SubTitle.Text = "Choose your configuration" end
+	if SubTitle then SubTitle.Text = "Choose your configuration c:" end
 	if Status then Status.Visible = false end
 	if LoadingBarBG then LoadingBarBG.Visible = false end
 	
@@ -336,7 +336,7 @@ local Workspace = game:GetService("Workspace")
 local Window = WindUI:CreateWindow({
 	Title = "Premium",
 	Icon = "star",
-	Author = "Vxnity Team, Ft: zdiezzy",
+	Author = "Vxnity Team, Ft: zdiezzy, by : discord.gg/XEg5aGfvU ",
 	Folder = "KtcHub",
 	Size = UDim2.fromOffset(625, 440),
 	Transparent = true,
@@ -1370,7 +1370,7 @@ do
 					if ball and hrp then
 						local dist = (ball.Position - hrp.Position).Magnitude
 						-- Only activate if ball is very close (dribbling range)
-						if dist < 6 then 
+						if dist < 7 then 
 							if sethiddenproperty then
 								pcall(sethiddenproperty, ball, "NetworkIsSleeping", false)
 							end
@@ -1413,11 +1413,11 @@ do
 		function(value)
 			if value then
 				AutoReactRange = 4.5
-				ReactVelocity = 176
+				ReactVelocity = 180
 				notify("Reacts", "Kenyah React Config Loaded")
 			else
 				AutoReactRange = 4.4
-				ReactVelocity = 155
+				ReactVelocity = 180
 				notify("Reacts", "Kenyah React Disabled (Reset to Default)")
 			end
 		end
@@ -1561,7 +1561,7 @@ do
 	addParagraph(
 		SectionChangelogs,
 		"Changelogs ktc hub",
-		"- Rebranded to ktc hub\n- Added Auto React (Trigger Bot) with Range/Power control\n- Added Tunaz / No Delay / Better React presets\n- Fixed Reach Method 1 & 2 (Precise Studs, Max 15)\n- Fixed Ball Reach (Max 10)\n- Fixed Sliders (Now using Input Boxes)\n- Fixed Keybind (K) stability\n- Optimized Physics (Heartbeat)"
+		"- Mejoras en el react, 0_Kenyah React Añadido, No ball delay Modificado, mas informacion: discord.gg/XEg5aGfvU - "
 	)
 end
 
@@ -1686,7 +1686,7 @@ if UserInputService.TouchEnabled then
 	local IconText = Instance.new("TextLabel")
 	IconText.Size = UDim2.fromScale(1, 1)
 	IconText.BackgroundTransparency = 1
-	IconText.Text = "W"
+	IconText.Text = "$"
 	IconText.TextColor3 = Color3.fromRGB(0, 170, 255)
 	IconText.TextSize = 24
 	IconText.Font = Enum.Font.GothamBold
