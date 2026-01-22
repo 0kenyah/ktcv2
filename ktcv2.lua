@@ -1370,7 +1370,7 @@ do
 					if ball and hrp then
 						local dist = (ball.Position - hrp.Position).Magnitude
 						-- Only activate if ball is very close (dribbling range)
-						if dist < 3 then 
+						if dist < 12 then 
 							if sethiddenproperty then
 								pcall(sethiddenproperty, ball, "NetworkIsSleeping", false)
 							end
