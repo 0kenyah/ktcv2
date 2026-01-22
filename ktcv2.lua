@@ -336,7 +336,7 @@ local Workspace = game:GetService("Workspace")
 local Window = WindUI:CreateWindow({
 	Title = "Premium",
 	Icon = "star",
-	Author = "Vxnity Team, Ft: zdiezzy, by : discord.gg/XEg5aGfvU ",
+	Author = "Vxnity Team x Ktc Hub| discord.gg/XEg5aGfvU ",
 	Folder = "KtcHub",
 	Size = UDim2.fromOffset(625, 440),
 	Transparent = true,
@@ -756,7 +756,7 @@ do
 		if type(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]) == "userdata" then
 			ping = tonumber(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString():match("%d+"))
 		end
-		return ping or 50
+		return ping or 40
 	end
 
 	local SectionMethod1 = createSection(TabReach, "Reach Method 1 [Recommended]")
@@ -1370,7 +1370,7 @@ do
 					if ball and hrp then
 						local dist = (ball.Position - hrp.Position).Magnitude
 						-- Only activate if ball is very close (dribbling range)
-						if dist < 7 then 
+						if dist < 4 then 
 							if sethiddenproperty then
 								pcall(sethiddenproperty, ball, "NetworkIsSleeping", false)
 							end
@@ -1669,7 +1669,7 @@ if UserInputService.TouchEnabled then
 	ToggleBtn.Position = UDim2.new(0.9, -60, 0.1, 0)
 	ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 	ToggleBtn.BorderSizePixel = 0
-	ToggleBtn.Image = "rbxassetid://114398035458800"
+	ToggleBtn.Image = "rbxassetid://12345678"
 	ToggleBtn.Active = true
 	ToggleBtn.Draggable = true
 	ToggleBtn.Parent = MobileGui
@@ -1686,7 +1686,7 @@ if UserInputService.TouchEnabled then
 	local IconText = Instance.new("TextLabel")
 	IconText.Size = UDim2.fromScale(1, 1)
 	IconText.BackgroundTransparency = 1
-	IconText.Text = "💀"
+	IconText.Text = "$"
 	IconText.TextColor3 = Color3.fromRGB(0, 170, 255)
 	IconText.TextSize = 24
 	IconText.Font = Enum.Font.GothamBold
