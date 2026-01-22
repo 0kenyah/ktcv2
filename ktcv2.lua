@@ -1409,15 +1409,15 @@ do
 		SectionPresets,
 		"0_Kenyah React",
 		false,
-		"0_Kenyah special configuration",
+		"0_Kenyah special configuration(OP)",
 		function(value)
 			if value then
 				AutoReactRange = 4.5
-				ReactVelocity = 154
+				ReactVelocity = 176
 				notify("Reacts", "Kenyah React Config Loaded")
 			else
-				AutoReactRange = 3.4
-				ReactVelocity = 120
+				AutoReactRange = 4.4
+				ReactVelocity = 155
 				notify("Reacts", "Kenyah React Disabled (Reset to Default)")
 			end
 		end
@@ -1669,7 +1669,7 @@ if UserInputService.TouchEnabled then
 	ToggleBtn.Position = UDim2.new(0.9, -60, 0.1, 0)
 	ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 	ToggleBtn.BorderSizePixel = 0
-	ToggleBtn.Image = "rbxassetid://12345678"
+	ToggleBtn.Image = "rbxassetid://114398035458800"
 	ToggleBtn.Active = true
 	ToggleBtn.Draggable = true
 	ToggleBtn.Parent = MobileGui
