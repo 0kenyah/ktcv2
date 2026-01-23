@@ -1341,7 +1341,7 @@ do
 		SectionBetter,
 		"Better React",
 		false,
-		"Continuously apply Velocity (100, 100, 100)",
+		"Continuously apply Velocity (110, 180, 120)",
 		function(value)
 			if value then
 				if BetterReactConnection then BetterReactConnection:Disconnect() end
@@ -1352,7 +1352,7 @@ do
 						local Character = Players.LocalPlayer.Character
 						local Root = Character and Character:FindFirstChild("HumanoidRootPart")
 						if Root and (Root.Position - TPS.Position).Magnitude < 15 then
-							TPS.Velocity = Vector3.new(100, 100, 100)
+							TPS.Velocity = Vector3.new(110, 180, 120)
 						end
 					end
 				end)
@@ -1371,7 +1371,7 @@ do
 		SectionAlz,
 		"Alz React",
 		false,
-		"Continuously apply Velocity (100, 100, 100)",
+		"Continuously apply Velocity (140, 120, 150)",
 		function(value)
 			if value then
 				if AlzReactConnection then AlzReactConnection:Disconnect() end
@@ -1382,7 +1382,7 @@ do
 						local Character = Players.LocalPlayer.Character
 						local Root = Character and Character:FindFirstChild("HumanoidRootPart")
 						if Root and (Root.Position - TPS.Position).Magnitude < 15 then
-							TPS.Velocity = Vector3.new(100, 100, 100)
+							TPS.Velocity = Vector3.new(140, 120, 150)
 						end
 					end
 				end)
@@ -1401,7 +1401,7 @@ do
 		SectionFoxtede,
 		"Foxtede React",
 		false,
-		"Continuously apply Velocity (110, 110, 110)",
+		"Continuously apply Velocity (150, 150, 110)",
 		function(value)
 			if value then
 				if FoxtedeReactConnection then FoxtedeReactConnection:Disconnect() end
@@ -1412,7 +1412,7 @@ do
 						local Character = Players.LocalPlayer.Character
 						local Root = Character and Character:FindFirstChild("HumanoidRootPart")
 						if Root and (Root.Position - TPS.Position).Magnitude < 15 then
-							TPS.Velocity = Vector3.new(110, 110, 110)
+							TPS.Velocity = Vector3.new(150, 150, 110)
 						end
 					end
 				end)
@@ -1472,7 +1472,7 @@ do
 					if ball and hrp then
 						local dist = (ball.Position - hrp.Position).Magnitude
 						-- Only activate if ball is very close (dribbling range)
-						if dist < 12 then 
+						if dist < 5 then 
 							if sethiddenproperty then
 								pcall(sethiddenproperty, ball, "NetworkIsSleeping", false)
 							end
@@ -1515,11 +1515,11 @@ do
 		function(value)
 			if value then
 				AutoReactRange = 4.5
-				ReactVelocity = 198
+				ReactVelocity = 170
 				notify("Reacts", "Kenyah React Config Loaded")
 			else
 				AutoReactRange = 4.4
-				ReactVelocity = 198
+				ReactVelocity = 170
 				notify("Reacts", "Kenyah React Disabled (Reset to Default)")
 			end
 		end
@@ -1635,7 +1635,7 @@ do
 	addParagraph(
 		SectionCredits,
 		"Developer Credits",
-		"zdeezy - Main Developer !"
+		"zdeezy - Main Developer, 0_Kenyahz Modifier of the Code (Skidd) "
 	)
 end
 
@@ -1644,7 +1644,7 @@ do
 	addParagraph(
 		SectionChangelogs,
 		"Changelogs ktc hub",
-		"- Mejoras en el react, 0_Kenyah React Añadido, No ball delay Modificado, mas informacion: discord.gg/XEg5aGfvU - "
+		"- Improvements across all Reacts, optimization improvements, more interesting loading times, more information:  discord.gg/XEg5aGfvU - "
 	)
 end
 
