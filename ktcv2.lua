@@ -1398,36 +1398,81 @@ do
 		end
 	)
 
-local SectionKenyahINF = createSection(TabReacts, "Kenyah INF Ultra OP")
+local SectionInfFast = createSection(TabReacts, "Inf-fast Helper")
+
+local InfFastConnection
+local TouchCount = 0
+local TouchConn
 
 addToggle(
-    SectionKenyahINF,
-    "Kenyah INF Ultra OP",
+    SectionInfFast,
+    "Inf-fast Helper",
     false,
-    "Balón pegado atrás de tus pies, imposible que te lo saquen, regate ultra rápido",
+    "It helps a lot when making quick inf, you'll be glued to the ball. ",
     function(value)
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        local LocalPlayer = Players.LocalPlayer
+
         if value then
+            TouchCount = 0
+
             task.spawn(function()
-                while value and Players.LocalPlayer.Character do
-                    local char = Players.LocalPlayer.Character
-                    local hrp = char:FindFirstChild("HumanoidRootPart")
-                    local ball = workspace:FindFirstChild("Ball")
-                    if hrp and ball then
-                        local targetPos = hrp.Position - hrp.CFrame.LookVector * 2.5 - Vector3.new(0, hrp.Size.Y / 2, 0)
-                        ball.Velocity = Vector3.new(0,0,0)
-                        ball.Position = targetPos
-                        ball.CanCollide = false
+                repeat task.wait() until workspace:FindFirstChild("Ball")
+                local ball = workspace.Ball
+
+                if TouchConn then TouchConn:Disconnect() end
+                TouchConn = ball.Touched:Connect(function(hit)
+                    if hit:IsDescendantOf(LocalPlayer.Character) then
+                        TouchCount += 1
                     end
-                    task.wait(0.015)
+                end)
+            end)
+
+            InfFastConnection = RunService.RenderStepped:Connect(function()
+                local char = LocalPlayer.Character
+                if not char then return end
+
+                local hrp = char:FindFirstChild("HumanoidRootPart")
+                local ball = workspace:FindFirstChild("Ball")
+
+                if hrp and ball then
+                    ball.AssemblyLinearVelocity = Vector3.zero
+                    ball.AssemblyAngularVelocity = Vector3.zero
+
+                    local forward = 0.85
+                    local down = hrp.Size.Y / 2 + 0.05
+
+                    local targetPos =
+                        hrp.Position
+                        + hrp.CFrame.LookVector * 0.25
+                        - hrp.CFrame.LookVector * forward
+                        - Vector3.new(0, down, 0)
+
+                    ball.Position = targetPos
+                    ball.CFrame = CFrame.new(targetPos, hrp.Position)
+                    ball.CanCollide = false
                 end
             end)
-            notify("Reacts", "Kenyah INF Ultra OP Enabled")
+
+            notify("Reacts", "Inf-fast Helper Ultra Enabled")
         else
+            if InfFastConnection then
+                InfFastConnection:Disconnect()
+                InfFastConnection = nil
+            end
+
+            if TouchConn then
+                TouchConn:Disconnect()
+                TouchConn = nil
+            end
+
             local ball = workspace:FindFirstChild("Ball")
             if ball then
                 ball.CanCollide = true
             end
-            notify("Reacts", "Kenyah INF Ultra OP Disabled")
+
+            notify("Reacts", "Inf-fast Helper Disabled | Toques: "..TouchCount)
         end
     end
 	)
