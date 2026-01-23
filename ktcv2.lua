@@ -120,7 +120,7 @@ TweenService:Create(
 	{ImageTransparency = 0.55}
 ):Play()
 
-
+-- multicolor glow
 task.spawn(function()
 	local colors = {
 		Color3.fromRGB(0,170,255),
@@ -215,9 +215,6 @@ local function closeLoadingScreen()
 		LoadingGui:Destroy()
 	end)
 end
-
-task.wait(0.9)
-LoadingGui:Destroy()
 
 local StarterGui = game:GetService("StarterGui")
 local Workspace = game:GetService("Workspace")
