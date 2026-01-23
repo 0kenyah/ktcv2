@@ -1549,13 +1549,15 @@ addToggle(
         NoDelayV2Enabled = value
 
         if value then
-            if NoDelayV2Connection then NoDelayV2Connection:Disconnect() end
+            if NoDelayV2Connection then
+                NoDelayV2Connection:Disconnect()
+            end
 
-            NoDelayV2Connection = RunService.Heartbeat:Connect(function(dt)
-                local char = Players.LocalPlayer.Character
+            NoDelayV2Connection = game:GetService("RunService").Heartbeat:Connect(function(dt)
+                local char = game:GetService("Players").LocalPlayer.Character
                 if not char then return end
 
-                local ball = Workspace:FindFirstChild("TPSSystem") and Workspace.TPSSystem:FindFirstChild("TPS")
+                local ball = workspace:FindFirstChild("TPSSystem") and workspace.TPSSystem:FindFirstChild("TPS")
                 if not ball then return end
 
                 local foot = char:FindFirstChild("RightFoot") or char:FindFirstChild("Right Leg")
@@ -1564,7 +1566,7 @@ addToggle(
                 local target = foot.CFrame * CFrame.new(0, -0.35, 1.8)
                 ball.CFrame = ball.CFrame:Lerp(target, math.clamp(dt * 12, 0, 1))
 
-                local vel = (target.Position - ball.Position) * 35
+                local vel = (target.Position - ball.Position) / dt
                 ball.AssemblyLinearVelocity = vel
                 ball.AssemblyAngularVelocity = Vector3.zero
             end)
