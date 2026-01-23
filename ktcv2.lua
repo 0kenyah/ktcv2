@@ -1651,26 +1651,12 @@ do
 end
 
 do
-	local SectionInfo = createSection(TabImportant, "Informacion e.e")
-
+	local SectionInfo = createSection(TabImportant, "User-Info e.e")
+local LocalPlayer = game.Players.LocalPlayer
+local executor = (type(identifyexecutor) == "function" and identifyexecutor()) or "Unknown"
 
 addParagraph(SectionInfo, "Usuario", LocalPlayer.Name)
-
-
-local executor = (type(identifyexecutor) == "function" and identifyexecutor()) or "Unknown"
 addParagraph(SectionInfo, "Executor", executor)
-
-
-local AvatarFrame = Instance.new("Frame")
-AvatarFrame.Size = UDim2.fromOffset(150, 150)
-AvatarFrame.BackgroundTransparency = 1
-AvatarFrame.Parent = SectionInfo  
-
-local AvatarImage = Instance.new("ImageLabel")
-AvatarImage.Size = UDim2.fromScale(1, 1)
-AvatarImage.BackgroundTransparency = 1
-AvatarImage.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. LocalPlayer.UserId .. "&width=150&height=150&format=png"
-AvatarImage.Parent = AvatarFrame
 
 do
 	local SectionWindow = createSection(TabSettings, "Window")
