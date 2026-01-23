@@ -1782,34 +1782,37 @@ if UserInputService.TouchEnabled then
 	end
 	MobileGui.Parent = parent
 	
-	local ToggleBtn = Instance.new("ImageButton")
-	ToggleBtn.Name = "ToggleBtn"
-	ToggleBtn.Size = UDim2.fromOffset(50, 50)
-	ToggleBtn.Position = UDim2.new(0.9, -60, 0.1, 0)
-	ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-	ToggleBtn.BorderSizePixel = 0
-	ToggleBtn.Image = "rbxassetid://97314042970903"
-	ToggleBtn.Active = true
-	ToggleBtn.Draggable = true
-	ToggleBtn.Parent = MobileGui
-	
-	local UICorner = Instance.new("UICorner")
-	UICorner.CornerRadius = UDim.new(0.5, 0)
-	UICorner.Parent = ToggleBtn
-	
-	local Stroke = Instance.new("UIStroke")
-	Stroke.Color = Color3.fromRGB(0, 170, 255)
-	Stroke.Thickness = 2
-	Stroke.Parent = ToggleBtn
-	
-	local IconText = Instance.new("TextLabel")
-	IconText.Size = UDim2.fromScale(1, 1)
-	IconText.BackgroundTransparency = 1
-	IconText.Text = ""
-	IconText.TextColor3 = Color3.fromRGB(0, 170, 255)
-	IconText.TextSize = 24
-	IconText.Font = Enum.Font.GothamBold
-	IconText.Parent = ToggleBtn
+local ToggleBtn = Instance.new("ImageButton")
+ToggleBtn.Name = "ToggleBtn"
+ToggleBtn.Size = UDim2.fromOffset(50, 50)
+ToggleBtn.Position = UDim2.new(0.9, -60, 0.1, 0)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+ToggleBtn.BorderSizePixel = 0
+ToggleBtn.Image = "rbxassetid://97314042970903"
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true
+ToggleBtn.Parent = MobileGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0.5, 0)
+UICorner.Parent = ToggleBtn
+
+local Stroke = Instance.new("UIGradient")
+Stroke.Rotation = 90
+Stroke.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
+}
+Stroke.Parent = ToggleBtn
+
+local IconText = Instance.new("TextLabel")
+IconText.Size = UDim2.fromScale(1, 1)
+IconText.BackgroundTransparency = 1
+IconText.Text = ""
+IconText.TextColor3 = Color3.fromRGB(0, 170, 255)
+IconText.TextSize = 24
+IconText.Font = Enum.Font.GothamBold
+IconText.Parent = ToggleBtn
 	
 	local uiVisible = true
 	ToggleBtn.MouseButton1Click:Connect(function()
