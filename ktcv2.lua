@@ -37,27 +37,17 @@ MainContainer.Position = UDim2.fromScale(0.5, 0.5)
 MainContainer.BackgroundTransparency = 1
 MainContainer.Parent = Background
 
-local Title = Instance.new("TextLabel")
-Title.Name = "Title"
-Title.Size = UDim2.new(1, 0, 0, 50)
-Title.Position = UDim2.fromScale(0, 0.3)
-Title.BackgroundTransparency = 1
-Title.Text = "ktc hub"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 42
-Title.Font = Enum.Font.GothamBold
-Title.Parent = MainContainer
-
-local SubTitle = Instance.new("TextLabel")
-SubTitle.Name = "SubTitle"
-SubTitle.Size = UDim2.new(1, 0, 0, 20)
-SubTitle.Position = UDim2.fromScale(0, 0.45)
-SubTitle.BackgroundTransparency = 1
-SubTitle.Text = "Premium Experience"
-SubTitle.TextColor3 = Color3.fromRGB(0, 170, 255)
-SubTitle.TextSize = 16
-SubTitle.Font = Enum.Font.Gotham
-SubTitle.Parent = MainContainer
+-- KTC ON TOP NIGGA --
+local Logo = Instance.new("ImageLabel")
+Logo.Name = "Logo"
+Logo.Size = UDim2.fromOffset(220, 80)
+Logo.Position = UDim2.fromScale(0.5, 0.38)
+Logo.AnchorPoint = Vector2.new(0.5, 0.5)
+Logo.BackgroundTransparency = 1
+Logo.Image = "rbxassetid://97314042970903"
+Logo.ImageTransparency = 0
+Logo.ScaleType = Enum.ScaleType.Fit
+Logo.Parent = MainContainer
 
 local LoadingBarBG = Instance.new("Frame")
 LoadingBarBG.Name = "LoadingBarBG"
@@ -94,24 +84,29 @@ Status.Font = Enum.Font.GothamMedium
 Status.Parent = MainContainer
 
 local function updateProgress(progress, text)
-	TweenService:Create(LoadingBarFill, TweenInfo.new(0.5, Enum.EasingStyle.Quad), {Size = UDim2.fromScale(progress, 1)}):Play()
+	TweenService:Create(
+		LoadingBarFill,
+		TweenInfo.new(0.5, Enum.EasingStyle.Quad),
+		{Size = UDim2.fromScale(progress, 1)}
+	):Play()
 	Status.Text = string.upper(text)
 	task.wait(0.05)
 end
 
 local function closeLoadingScreen()
 	local tweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-	local fadeOut = TweenService:Create(Background, tweenInfo, {BackgroundTransparency = 1})
-	TweenService:Create(Title, tweenInfo, {TextTransparency = 1}):Play()
-	TweenService:Create(SubTitle, tweenInfo, {TextTransparency = 1}):Play()
+
+	TweenService:Create(Logo, tweenInfo, {ImageTransparency = 1}):Play()
 	TweenService:Create(Status, tweenInfo, {TextTransparency = 1}):Play()
 	TweenService:Create(LoadingBarBG, tweenInfo, {BackgroundTransparency = 1}):Play()
 	TweenService:Create(LoadingBarFill, tweenInfo, {BackgroundTransparency = 1}):Play()
-	
+
+	local fadeOut = TweenService:Create(Background, tweenInfo, {BackgroundTransparency = 1})
 	fadeOut:Play()
 	fadeOut.Completed:Connect(function()
 		LoadingGui:Destroy()
 	end)
+end)
 end
 
 local StarterGui = game:GetService("StarterGui")
