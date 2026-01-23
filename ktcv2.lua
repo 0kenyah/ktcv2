@@ -1625,12 +1625,10 @@ end
 
 do
 	local SectionImportant = createSection(TabImportant, "Important")
-	local executor = type(identifyexecutor) == "function" and identifyexecutor() or "Unknown"
-	addParagraph(SectionImportant, "Your Executor", executor)
-	addParagraph(
-		SectionImportant,
-		"Important Note",
-		"Make sure to use good executors for best experience and support"
+addParagraph(
+    SectionImportant,
+    "Important Note",
+    "Make sure to use good executors for best experience and support"
 	)
 end
 
@@ -1655,14 +1653,24 @@ end
 do
 	local SectionInfo = createSection(TabImportant, "Informacion e.e")
 
-	local usuario = game.Players.LocalPlayer.Name
-	local executor = type(identifyexecutor) == "function" and identifyexecutor() or "Unknown"
-	local avatarUrl = "https://www.roblox.com/headshot-thumbnail/image?userId="..game.Players.LocalPlayer.UserId.."&width=420&height=420&format=png"
 
-	addParagraph(SectionInfo, "Usuario", usuario)
-	addParagraph(SectionInfo, "Executor", executor)
-	addParagraph(SectionInfo, "Avatar", avatarUrl)
-end
+addParagraph(SectionInfo, "Usuario", LocalPlayer.Name)
+
+
+local executor = (type(identifyexecutor) == "function" and identifyexecutor()) or "Unknown"
+addParagraph(SectionInfo, "Executor", executor)
+
+
+local AvatarFrame = Instance.new("Frame")
+AvatarFrame.Size = UDim2.fromOffset(150, 150)
+AvatarFrame.BackgroundTransparency = 1
+AvatarFrame.Parent = SectionInfo  
+
+local AvatarImage = Instance.new("ImageLabel")
+AvatarImage.Size = UDim2.fromScale(1, 1)
+AvatarImage.BackgroundTransparency = 1
+AvatarImage.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. LocalPlayer.UserId .. "&width=150&height=150&format=png"
+AvatarImage.Parent = AvatarFrame
 
 do
 	local SectionWindow = createSection(TabSettings, "Window")
