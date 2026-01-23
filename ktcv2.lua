@@ -1496,53 +1496,47 @@ do
 	)
 
 	
+-- KENYAH REACT (original)
 addToggle(
     SectionPresets,
-    "0_Kenyah OP React",
+    "0_Kenyah React",
     false,
-    "Kenyah special OP React configuration",
+    "0_Kenyah special configuration(OP)",
     function(value)
         if value then
-            AutoReactRange = 6
-            ReactVelocity = 250
-            ReactTickRate = 0.02
-            AntiReach = true
-            HitChance = 100
-            notify("Reacts", "Kenyah OP React Enabled")
+            AutoReactRange = 4.5
+            ReactVelocity = 300
+            notify("Reacts", "Kenyah React Config Loaded")
         else
             AutoReactRange = 4.4
             ReactVelocity = 300
-            ReactTickRate = 0.09
-            AntiReach = false
-            HitChance = 80
-            notify("Reacts", "Kenyah OP React Disabled (Reset to Default)")
+            notify("Reacts", "Kenyah React Disabled (Reset to Default)")
         end
     end
 )
 
+-- KENYAH INF (balón atrás de ti)
 addToggle(
     SectionPresets,
-    "Ball Stick",
+    "Kenyah INF",
     false,
-    "Keep ball super close and always in front of you",
+    "Manten el balón pegado atrás de tus pies",
     function(value)
         if value then
             task.spawn(function()
                 while value and Players.LocalPlayer.Character do
                     local char = Players.LocalPlayer.Character
-                    local ball = getBall()
-                    if char and ball then
-                        local hrp = char:FindFirstChild("HumanoidRootPart")
-                        if hrp then
-                            ball.Position = hrp.Position + hrp.CFrame.LookVector * 2
-                        end
+                    local hrp = char:FindFirstChild("HumanoidRootPart")
+                    local ball = workspace:FindFirstChild("Ball")
+                    if hrp and ball then
+                        ball.Position = hrp.Position - hrp.CFrame.LookVector * 2 - Vector3.new(0, hrp.Size.Y / 2, 0)
                     end
-                    task.wait(0.01)
+                    task.wait(0.03)
                 end
             end)
-            notify("Ball", "Ball Stick Enabled")
+            notify("Reacts", "Kenyah INF Enabled")
         else
-            notify("Ball", "Ball Stick Disabled")
+            notify("Reacts", "Kenyah INF Disabled")
         end
     end
 	)
