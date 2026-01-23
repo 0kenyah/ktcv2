@@ -1533,8 +1533,52 @@ do
             notify("Reacts", "Kenyah OP React Disabled (Reset to Default)")
         end
     end
+)
+
+local SectionNoDelayV2 = createSection(TabReacts, "No Delay V2")
+
+local NoDelayV2Connection
+local NoDelayV2Enabled = false
+
+addToggle(
+    SectionNoDelayV2,
+    "No Delay V2",
+    false,
+    "Smooth ball control, instant response",
+    function(value)
+        NoDelayV2Enabled = value
+
+        if value then
+            if NoDelayV2Connection then NoDelayV2Connection:Disconnect() end
+
+            NoDelayV2Connection = RunService.Heartbeat:Connect(function(dt)
+                local char = Players.LocalPlayer.Character
+                if not char then return end
+
+                local ball = Workspace:FindFirstChild("TPSSystem") and Workspace.TPSSystem:FindFirstChild("TPS")
+                if not ball then return end
+
+                local foot = char:FindFirstChild("RightFoot") or char:FindFirstChild("Right Leg")
+                if not foot then return end
+
+                local target = foot.CFrame * CFrame.new(0, -0.35, 1.8)
+                ball.CFrame = ball.CFrame:Lerp(target, math.clamp(dt * 12, 0, 1))
+
+                local vel = (target.Position - ball.Position) * 35
+                ball.AssemblyLinearVelocity = vel
+                ball.AssemblyAngularVelocity = Vector3.zero
+            end)
+
+            notify("No Delay V2", "Activated")
+        else
+            if NoDelayV2Connection then
+                NoDelayV2Connection:Disconnect()
+                NoDelayV2Connection = nil
+            end
+            notify("No Delay V2", "Deactivated")
+        end
+    end
 	)
-end
 
                         
 
