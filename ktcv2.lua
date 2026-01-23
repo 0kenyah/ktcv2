@@ -1398,13 +1398,13 @@ do
 		end
 	)
 
-	local SectionKenyahINF = createSection(TabReacts, "Kenyah INF React")
+local SectionKenyahINF = createSection(TabReacts, "Kenyah INF Ultra OP")
 
 addToggle(
     SectionKenyahINF,
-    "Kenyah INF",
+    "Kenyah INF Ultra OP",
     false,
-    "Mantén el balón pegado atrás de tus pies y todos los toques contados, sin que te vean reacher",
+    "Balón pegado atrás de tus pies, imposible que te lo saquen, regate ultra rápido",
     function(value)
         if value then
             task.spawn(function()
@@ -1413,14 +1413,21 @@ addToggle(
                     local hrp = char:FindFirstChild("HumanoidRootPart")
                     local ball = workspace:FindFirstChild("Ball")
                     if hrp and ball then
-                        ball.Position = hrp.Position - hrp.CFrame.LookVector * 1.2 + Vector3.new(0, hrp.Size.Y / 2, 0)
+                        local targetPos = hrp.Position - hrp.CFrame.LookVector * 2.5 - Vector3.new(0, hrp.Size.Y / 2, 0)
+                        ball.Velocity = Vector3.new(0,0,0)
+                        ball.Position = targetPos
+                        ball.CanCollide = false
                     end
-                    task.wait(0.03)
+                    task.wait(0.015)
                 end
             end)
-            notify("Reacts", "Kenyah INF Enabled")
+            notify("Reacts", "Kenyah INF Ultra OP Enabled")
         else
-            notify("Reacts", "Kenyah INF Disabled")
+            local ball = workspace:FindFirstChild("Ball")
+            if ball then
+                ball.CanCollide = true
+            end
+            notify("Reacts", "Kenyah INF Ultra OP Disabled")
         end
     end
 	)
