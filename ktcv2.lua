@@ -1651,12 +1651,15 @@ do
 end
 
 do
-	local SectionInfo = createSection(TabImportant, "User-Info e.e")
-local LocalPlayer = game.Players.LocalPlayer
-local executor = (type(identifyexecutor) == "function" and identifyexecutor()) or "Unknown"
+    local SectionInfo = createSection(TabImportant, "Informacion e.e")
+    local LocalPlayer = game.Players.LocalPlayer
+    local executor = (type(identifyexecutor) == "function" and identifyexecutor()) or "Unknown"
+    local serverLocation = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui") and game:GetService("Players").LocalPlayer.PlayerGui.Parent.Name or "Unknown" 
 
-addParagraph(SectionInfo, "Usuario", LocalPlayer.Name)
-addParagraph(SectionInfo, "Executor", executor)
+    addParagraph(SectionInfo, "Usuario", LocalPlayer.Name)
+    addParagraph(SectionInfo, "Executor", executor)
+    addParagraph(SectionInfo, "Server Location", serverLocation)
+end
 
 do
 	local SectionWindow = createSection(TabSettings, "Window")
