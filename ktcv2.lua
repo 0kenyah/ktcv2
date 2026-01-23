@@ -1651,7 +1651,7 @@ do
 end
 
 do
-    local SectionInfo = createSection(TabImportant, "User-Info e.e")
+    local SectionInfo = createSection(TabImportant, "Informacion e.e")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local executor = (type(identifyexecutor) == "function" and identifyexecutor()) or "Unknown"
