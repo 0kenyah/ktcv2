@@ -1536,7 +1536,6 @@ do
 )
 
 local SectionNoDelayV2 = createSection(TabReacts, "No Delay V2")
-
 local NoDelayV2Connection
 local NoDelayV2Enabled = false
 
@@ -1554,20 +1553,22 @@ addToggle(
             end
 
             NoDelayV2Connection = game:GetService("RunService").Heartbeat:Connect(function(dt)
-                local char = game:GetService("Players").LocalPlayer.Character
+                local player = game:GetService("Players").LocalPlayer
+                local char = player.Character
                 if not char then return end
 
-                local ball = workspace:FindFirstChild("TPSSystem") and workspace.TPSSystem:FindFirstChild("TPS")
+                local ballSystem = workspace:FindFirstChild("TPSSystem")
+                local ball = ballSystem and ballSystem:FindFirstChild("TPS")
                 if not ball then return end
 
                 local foot = char:FindFirstChild("RightFoot") or char:FindFirstChild("Right Leg")
                 if not foot then return end
 
-                local target = foot.CFrame * CFrame.new(0, -0.35, 1.8)
-                ball.CFrame = ball.CFrame:Lerp(target, math.clamp(dt * 12, 0, 1))
+                local targetCFrame = foot.CFrame * CFrame.new(0, -0.35, 1.8)
+                ball.CFrame = ball.CFrame:Lerp(targetCFrame, math.clamp(dt * 15, 0, 1))
 
-                local vel = (target.Position - ball.Position) / dt
-                ball.AssemblyLinearVelocity = vel
+                local velocity = (targetCFrame.Position - ball.Position) / dt
+                ball.AssemblyLinearVelocity = velocity
                 ball.AssemblyAngularVelocity = Vector3.zero
             end)
 
@@ -1581,7 +1582,6 @@ addToggle(
         end
     end
 	)
-
                         
 
 do
