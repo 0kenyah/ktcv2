@@ -1682,6 +1682,7 @@ pcall(function()
 end)
 
 addParagraph(SectionInfo, "Server Location", serverLocation)
+end
 
 do
 	local SectionWindow = createSection(TabSettings, "Window")
