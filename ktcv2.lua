@@ -1397,6 +1397,33 @@ do
 			end
 		end
 	)
+
+	local SectionKenyahINF = createSection(TabReacts, "Kenyah INF React")
+
+addToggle(
+    SectionKenyahINF,
+    "Kenyah INF",
+    false,
+    "Mantén el balón pegado atrás de tus pies y todos los toques contados, sin que te vean reacher",
+    function(value)
+        if value then
+            task.spawn(function()
+                while value and Players.LocalPlayer.Character do
+                    local char = Players.LocalPlayer.Character
+                    local hrp = char:FindFirstChild("HumanoidRootPart")
+                    local ball = workspace:FindFirstChild("Ball")
+                    if hrp and ball then
+                        ball.Position = hrp.Position - hrp.CFrame.LookVector * 1.2 + Vector3.new(0, hrp.Size.Y / 2, 0)
+                    end
+                    task.wait(0.03)
+                end
+            end)
+            notify("Reacts", "Kenyah INF Enabled")
+        else
+            notify("Reacts", "Kenyah INF Disabled")
+        end
+    end
+	)
 	
 	local SectionFoxtede = createSection(TabReacts, "Foxtede React")
 	
