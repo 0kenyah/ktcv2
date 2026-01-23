@@ -1651,15 +1651,37 @@ do
 end
 
 do
-    local SectionInfo = createSection(TabImportant, "Informacion e.e")
-    local LocalPlayer = game.Players.LocalPlayer
-    local executor = (type(identifyexecutor) == "function" and identifyexecutor()) or "Unknown"
-    local serverLocation = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui") and game:GetService("Players").LocalPlayer.PlayerGui.Parent.Name or "Unknown" 
+    local SectionInfo = createSection(TabImportant, "User-Info e.e")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local executor = (type(identifyexecutor) == "function" and identifyexecutor()) or "Unknown"
 
-    addParagraph(SectionInfo, "Usuario", LocalPlayer.Name)
-    addParagraph(SectionInfo, "Executor", executor)
-    addParagraph(SectionInfo, "Server Location", serverLocation)
-end
+addParagraph(SectionInfo, "Usuario", LocalPlayer.Name)
+addParagraph(SectionInfo, "Executor", executor)
+
+local regionMap = {
+    ["US"] = "Texas/New York/Miami/Virginia",
+    ["BR"] = "Brasil",
+    ["EU"] = "Europa",
+    ["AP"] = "Asia Pacífico",
+    ["JP"] = "Japón",
+    ["AU"] = "Australia"
+}
+
+
+local serverLocation = "Unknown"
+pcall(function()
+    if game:GetService("Stats").PerformanceStats.ReservedMemory then
+        local region = game:GetService("Stats").ServerStatsItem["Region"]:GetValueString()
+        if regionMap[region] then
+            serverLocation = regionMap[region]
+        else
+            serverLocation = region
+        end
+    end
+end)
+
+addParagraph(SectionInfo, "Server Location", serverLocation)
 
 do
 	local SectionWindow = createSection(TabSettings, "Window")
