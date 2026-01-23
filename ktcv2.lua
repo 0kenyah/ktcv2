@@ -1512,37 +1512,6 @@ addToggle(
             notify("Reacts", "Kenyah React Disabled (Reset to Default)")
         end
     end
-)
-
--- KENYAH INF (balón atrás de ti)
-local KenyahINFActive = false
-
-addToggle(
-    SectionPresets,
-    "Kenyah INF",
-    false,
-    "Mantén el balón pegado detrás de tus pies",
-    function(value)
-        KenyahINFActive = value
-        if value then
-            notify("Reacts", "Kenyah INF Enabled")
-            task.spawn(function()
-                while KenyahINFActive do
-                    local player = Players.LocalPlayer
-                    local char = player and player.Character
-                    local hrp = char and char:FindFirstChild("HumanoidRootPart")
-                    local ball = workspace:FindFirstChild("Ball")
-                    if hrp and ball then
-                        -- Coloca el balón detrás de los pies
-                        ball.Position = hrp.Position - hrp.CFrame.LookVector * 2 - Vector3.new(0, hrp.Size.Y / 2, 0)
-                    end
-                    task.wait(0.03)
-                end
-            end)
-        else
-            notify("Reacts", "Kenyah INF Disabled")
-        end
-    end
 	)
                         
 
