@@ -1496,75 +1496,90 @@ do
 	)
 	
 	addToggle(
-		SectionPresets,
-		"Better React",
-		false,
-		"Improved physics handling for reactions",
-		function(value)
-			if value then
-				settings().Physics.PhysicsEnvironmentalThrottle = Enum.EnviromentalPhysicsThrottle.Disabled
-				notify("Reacts", "Better React Applied")
-			else
-				settings().Physics.PhysicsEnvironmentalThrottle = Enum.EnviromentalPhysicsThrottle.Default
-				notify("Reacts", "Better React Disabled")
-			end
-		end
-	)
 	
-local NoDelayV2Connection
+addToggle(
+    SectionPresets,
+    "Better React",
+    false,
+    "Improved physics handling for reactions",
+    function(value)
+        if value then
+            settings().Physics.PhysicsEnvironmentalThrottle = Enum.EnviromentalPhysicsThrottle.Disabled
+            notify("Reacts", "Better React Applied")
+        else
+            settings().Physics.PhysicsEnvironmentalThrottle = Enum.EnviromentalPhysicsThrottle.Default
+            notify("Reacts", "Better React Disabled")
+        end
+    end
+)
+
 
 addToggle(
     SectionPresets,
-    "0_Kenyah OP React ",
+    "0_Kenyah OP React",
     false,
-    "Op  react, 0_Kenyah",
+    "Kenyah special OP React configuration",
     function(value)
-        local Players = game:GetService("Players")
-        local RunService = game:GetService("RunService")
-        local LocalPlayer = Players.LocalPlayer
-
-        -- KENYAH ON TOP --
-        AutoReactRange = value and 6 or 4.4
-        ReactVelocity = value and 300 or 170
-        ReactTickRate = value and 0.02 or 0.05
-        AntiReach = value and true or false
-        HitChance = value and 100 or 80
-
-        notify("Reacts", value and "0_Kenyah OP React Enabled" or "0_Kenyah OP React Disabled (Reset)")
-
-        
         if value then
-            if NoDelayV2Connection then
-                NoDelayV2Connection:Disconnect()
-            end
-
-            NoDelayV2Connection = RunService.Heartbeat:Connect(function(dt)
-                local char = LocalPlayer.Character
-                if not char then return end
-
-                local foot = char:FindFirstChild("RightFoot") or char:FindFirstChild("Right Leg")
-                if not foot then return end
-
-                local ball = workspace:FindFirstChild("TPSSystem") and workspace.TPSSystem:FindFirstChild("TPS")
-                if not ball then return end
-
-                
-                local targetCFrame = foot.CFrame * CFrame.new(0, -0.35, 1.5)
-                ball.CFrame = ball.CFrame:Lerp(targetCFrame, math.clamp(dt * 25, 0, 1))
-
-            
-                local vel = (targetCFrame.Position - ball.Position) / math.max(dt, 0.001)
-                ball.AssemblyLinearVelocity = vel
-                ball.AssemblyAngularVelocity = Vector3.zero
-            end)
+            AutoReactRange = 6
+            ReactVelocity = 250
+            ReactTickRate = 0.02
+            AntiReach = true
+            HitChance = 100
+            notify("Reacts", "Kenyah OP React Enabled")
         else
-            if NoDelayV2Connection then
-                NoDelayV2Connection:Disconnect()
-                NoDelayV2Connection = nil
-            end
+            AutoReactRange = 4.4
+            ReactVelocity = 300
+            ReactTickRate = 0.09
+            AntiReach = false
+            HitChance = 80
+            notify("Reacts", "Kenyah OP React Disabled (Reset to Default)")
         end
     end
-	)
+)
+
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:WaitForChild("HumanoidRootPart")
+
+local DribbleEnabled = false
+local BallFollowDistance = 2
+
+local function getBall()
+    for _, ball in pairs(workspace:GetChildren()) do
+        if ball.Name == "Ball" then
+            return ball
+        end
+    end
+    return nil
+end
+
+game:GetService("RunService").Heartbeat:Connect(function()
+    if DribbleEnabled then
+        local ball = getBall()
+        if ball then
+            local direction = (ball.Position - hrp.Position).Unit
+            hrp.CFrame = CFrame.new(ball.Position - direction * BallFollowDistance, ball.Position)
+        end
+    end
+end)
+
+
+addToggle(
+    SectionPresets,
+    "Kenyah INF",
+    false,
+    "He hits the ball a bit like Tunaz/Azrael ",
+    function(value)
+        DribbleEnabled = value
+        if value then
+            notify("Dribble", "KenyahINF Enabled")
+        else
+            notify("Dribble", "KenyahINF Disabled")
+        end
+    end
+		)
                         
 
 do
