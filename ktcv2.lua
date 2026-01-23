@@ -1512,21 +1512,27 @@ do
 	)
 	
 	addToggle(
-		SectionPresets,
-		"0_Kenyah React",
-		false,
-		"0_Kenyah special configuration(OP)",
-		function(value)
-			if value then
-				AutoReactRange = 4.5
-				ReactVelocity = 170
-				notify("Reacts", "Kenyah React Config Loaded")
-			else
-				AutoReactRange = 4.4
-				ReactVelocity = 170
-				notify("Reacts", "Kenyah React Disabled (Reset to Default)")
-			end
-		end
+    SectionPresets,
+    "0_Kenyah OP React",
+    false,
+    "Kenyah special OP React configuration",
+    function(value)
+        if value then
+            AutoReactRange = 6
+            ReactVelocity = 250
+            ReactTickRate = 0.02
+            AntiReach = true
+            HitChance = 100
+            notify("Reacts", "Kenyah OP React Enabled")
+        else
+            AutoReactRange = 4.4
+            ReactVelocity = 170
+            ReactTickRate = 0.05
+            AntiReach = false
+            HitChance = 80
+            notify("Reacts", "Kenyah OP React Disabled (Reset to Default)")
+        end
+    end
 	)
 end
 
