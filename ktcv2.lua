@@ -181,14 +181,18 @@ for i = 1, 70 do
 	spawnParticle()
 end
 
+local displayedProgress = 0
+local targetProgress = 0
+
+RunService.RenderStepped:Connect(function(dt)
+	displayedProgress += (targetProgress - displayedProgress) * math.clamp(dt * 6, 0, 1)
+	LoadingBarFill.Size = UDim2.fromScale(displayedProgress, 1)
+end)
+
 local function updateProgress(progress, text)
-	TweenService:Create(
-		LoadingBarFill,
-		TweenInfo.new(0.5, Enum.EasingStyle.Quad),
-		{Size = UDim2.fromScale(progress, 1)}
-	):Play()
+	targetProgress = math.clamp(progress, 0, 1)
 	Status.Text = string.upper(text)
-	task.wait(0.05)
+	task.wait(math.random(0.1, 0.3))
 end
 
 local function closeLoadingScreen()
@@ -1646,6 +1650,18 @@ do
 		"Changelogs ktc hub",
 		"- Improvements across all Reacts, optimization improvements, more interesting loading times, more information:  discord.gg/XEg5aGfvU - "
 	)
+end
+
+do
+	local SectionInfo = createSection(TabImportant, "Informacion e.e")
+
+	local usuario = game.Players.LocalPlayer.Name
+	local executor = type(identifyexecutor) == "function" and identifyexecutor() or "Unknown"
+	local avatarUrl = "https://www.roblox.com/headshot-thumbnail/image?userId="..game.Players.LocalPlayer.UserId.."&width=420&height=420&format=png"
+
+	addParagraph(SectionInfo, "Usuario", usuario)
+	addParagraph(SectionInfo, "Executor", executor)
+	addParagraph(SectionInfo, "Avatar", avatarUrl)
 end
 
 do
