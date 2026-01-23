@@ -1512,40 +1512,18 @@ do
 	)
 	
 	addToggle(
+    addToggle(
     SectionPresets,
-    "0_Kenyah OP React",
+    "0_Kenyah OP React + No Delay V2",
     false,
-    "Kenyah special OP React configuration",
+    "Kenyah special OP React configuration + smooth ball control",
     function(value)
-        if value then
-            AutoReactRange = 6
-            ReactVelocity = 250
-            ReactTickRate = 0.02
-            AntiReach = true
-            HitChance = 100
-            notify("Reacts", "Kenyah OP React Enabled")
-        else
-            AutoReactRange = 4.4
-            ReactVelocity = 170
-            ReactTickRate = 0.05
-            AntiReach = false
-            HitChance = 80
-            notify("Reacts", "Kenyah OP React Disabled (Reset to Default)")
-        end
-    end
-)
-
-local SectionNoDelayV2 = createSection(TabReacts, "No Delay V2")
-local NoDelayV2Connection
-local NoDelayV2Enabled = false
-
-addToggle(
-    SectionNoDelayV2,
-    "No Delay V2",
-    false,
-    "Smooth ball control, instant response",
-    function(value)
-        NoDelayV2Enabled = value
+        AutoReactRange = value and 6 or 4.4
+        ReactVelocity = value and 250 or 170
+        ReactTickRate = value and 0.02 or 0.05
+        AntiReach = value and true or false
+        HitChance = value and 100 or 80
+        notify("Reacts", value and "0_Kenyah OP React Enabled" or "0_Kenyah OP React Disabled (Reset to Default)")
 
         if value then
             if NoDelayV2Connection then
@@ -1553,35 +1531,29 @@ addToggle(
             end
 
             NoDelayV2Connection = game:GetService("RunService").Heartbeat:Connect(function(dt)
-                local player = game:GetService("Players").LocalPlayer
-                local char = player.Character
+                local char = game:GetService("Players").LocalPlayer.Character
                 if not char then return end
 
-                local ballSystem = workspace:FindFirstChild("TPSSystem")
-                local ball = ballSystem and ballSystem:FindFirstChild("TPS")
+                local ball = workspace:FindFirstChild("TPSSystem") and workspace.TPSSystem:FindFirstChild("TPS")
                 if not ball then return end
 
                 local foot = char:FindFirstChild("RightFoot") or char:FindFirstChild("Right Leg")
                 if not foot then return end
 
-                local targetCFrame = foot.CFrame * CFrame.new(0, -0.35, 1.8)
-                ball.CFrame = ball.CFrame:Lerp(targetCFrame, math.clamp(dt * 15, 0, 1))
-
-                local velocity = (targetCFrame.Position - ball.Position) / dt
-                ball.AssemblyLinearVelocity = velocity
+                local target = foot.CFrame * CFrame.new(0, -0.35, 1.8)
+                ball.CFrame = ball.CFrame:Lerp(target, math.clamp(dt * 20, 0, 1))
+                local vel = (target.Position - ball.Position) / dt
+                ball.AssemblyLinearVelocity = vel
                 ball.AssemblyAngularVelocity = Vector3.zero
             end)
-
-            notify("No Delay V2", "Activated")
         else
             if NoDelayV2Connection then
                 NoDelayV2Connection:Disconnect()
                 NoDelayV2Connection = nil
             end
-            notify("No Delay V2", "Deactivated")
         end
     end
-	)
+		)
                         
 
 do
