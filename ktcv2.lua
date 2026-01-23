@@ -1494,26 +1494,8 @@ do
 			end
 		end
 	)
-	
-	addToggle(
-	
-addToggle(
-    SectionPresets,
-    "Better React",
-    false,
-    "Improved physics handling for reactions",
-    function(value)
-        if value then
-            settings().Physics.PhysicsEnvironmentalThrottle = Enum.EnviromentalPhysicsThrottle.Disabled
-            notify("Reacts", "Better React Applied")
-        else
-            settings().Physics.PhysicsEnvironmentalThrottle = Enum.EnviromentalPhysicsThrottle.Default
-            notify("Reacts", "Better React Disabled")
-        end
-    end
-)
 
-
+	
 addToggle(
     SectionPresets,
     "0_Kenyah OP React",
@@ -1538,48 +1520,32 @@ addToggle(
     end
 )
 
-
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local hrp = character:WaitForChild("HumanoidRootPart")
-
-local DribbleEnabled = false
-local BallFollowDistance = 2
-
-local function getBall()
-    for _, ball in pairs(workspace:GetChildren()) do
-        if ball.Name == "Ball" then
-            return ball
-        end
-    end
-    return nil
-end
-
-game:GetService("RunService").Heartbeat:Connect(function()
-    if DribbleEnabled then
-        local ball = getBall()
-        if ball then
-            local direction = (ball.Position - hrp.Position).Unit
-            hrp.CFrame = CFrame.new(ball.Position - direction * BallFollowDistance, ball.Position)
-        end
-    end
-end)
-
-
 addToggle(
     SectionPresets,
-    "Kenyah INF",
+    "Ball Stick",
     false,
-    "He hits the ball a bit like Tunaz/Azrael ",
+    "Keep ball super close and always in front of you",
     function(value)
-        DribbleEnabled = value
         if value then
-            notify("Dribble", "KenyahINF Enabled")
+            task.spawn(function()
+                while value and Players.LocalPlayer.Character do
+                    local char = Players.LocalPlayer.Character
+                    local ball = getBall()
+                    if char and ball then
+                        local hrp = char:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            ball.Position = hrp.Position + hrp.CFrame.LookVector * 2
+                        end
+                    end
+                    task.wait(0.01)
+                end
+            end)
+            notify("Ball", "Ball Stick Enabled")
         else
-            notify("Dribble", "KenyahINF Disabled")
+            notify("Ball", "Ball Stick Disabled")
         end
     end
-		)
+	)
                         
 
 do
