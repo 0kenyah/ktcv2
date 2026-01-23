@@ -1,6 +1,7 @@
 task.wait(1)
 
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
 LoadingGui.IgnoreGuiInset = true
@@ -62,7 +63,6 @@ Glow.AnchorPoint = Vector2.new(0.5, 0.5)
 Glow.Position = UDim2.fromScale(0.5, 0.38)
 Glow.BackgroundTransparency = 1
 Glow.Image = "rbxassetid://5028857084"
-Glow.ImageColor3 = Color3.fromRGB(0, 170, 255)
 Glow.ImageTransparency = 0.35
 Glow.ScaleType = Enum.ScaleType.Fit
 Glow.ZIndex = 1
@@ -78,24 +78,6 @@ Logo.Image = "rbxassetid://97314042970903"
 Logo.ScaleType = Enum.ScaleType.Fit
 Logo.ZIndex = 2
 Logo.Parent = MainContainer
-
-local GameTextGlow = Instance.new("TextLabel")
-GameTextGlow.Size = UDim2.new(1, 0, 0, 24)
-GameTextGlow.Position = UDim2.fromScale(0, 0.55)
-GameTextGlow.BackgroundTransparency = 1
-GameTextGlow.Text = "Premium Experience, Vxnity Team ."
-GameTextGlow.TextColor3 = Color3.fromRGB(0, 170, 255)
-GameTextGlow.TextSize = 14
-GameTextGlow.Font = Enum.Font.GothamMedium
-GameTextGlow.TextTransparency = 0.2
-GameTextGlow.ZIndex = 1
-GameTextGlow.Parent = MainContainer
-
-local GameText = GameTextGlow:Clone()
-GameText.TextColor3 = Color3.fromRGB(230, 230, 240)
-GameText.TextTransparency = 0
-GameText.ZIndex = 2
-GameText.Parent = MainContainer
 
 local LoadingBarBG = Instance.new("Frame")
 LoadingBarBG.Name = "LoadingBarBG"
@@ -131,11 +113,73 @@ Status.TextSize = 14
 Status.Font = Enum.Font.GothamMedium
 Status.Parent = MainContainer
 
+
 TweenService:Create(
 	Glow,
 	TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
 	{ImageTransparency = 0.55}
 ):Play()
+
+
+task.spawn(function()
+	local colors = {
+		Color3.fromRGB(0,170,255),
+		Color3.fromRGB(180,0,255),
+		Color3.fromRGB(255,80,80),
+		Color3.fromRGB(0,255,170),
+	}
+	local i = 1
+	while Glow.Parent do
+		TweenService:Create(
+			Glow,
+			TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+			{ImageColor3 = colors[i]}
+		):Play()
+		i = i % #colors + 1
+		task.wait(2)
+	end
+end)
+
+
+local ParticlesFolder = Instance.new("Folder")
+ParticlesFolder.Name = "Particles"
+ParticlesFolder.Parent = Background
+
+local particleConnections = {}
+
+local function spawnParticle()
+	local p = Instance.new("Frame")
+	local size = math.random(2,5)
+	p.Size = UDim2.fromOffset(size, size)
+	p.Position = UDim2.fromScale(math.random(), math.random())
+	p.BackgroundColor3 = Color3.fromRGB(255,255,255)
+	p.BackgroundTransparency = math.random(30,60)/100
+	p.BorderSizePixel = 0
+	p.ZIndex = 0
+	p.Parent = ParticlesFolder
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(1,0)
+	corner.Parent = p
+
+	local drift = Vector2.new(
+		math.random(-10,10)/1000,
+		math.random(-10,10)/1000
+	)
+
+	local conn
+	conn = RunService.RenderStepped:Connect(function()
+		if not p.Parent then conn:Disconnect() return end
+		p.Position += UDim2.fromScale(drift.X, drift.Y)
+	end)
+
+	table.insert(particleConnections, conn)
+	return p
+end
+
+for i = 1, 70 do
+	spawnParticle()
+end
 
 local function updateProgress(progress, text)
 	TweenService:Create(
@@ -154,15 +198,20 @@ local function closeLoadingScreen()
 	TweenService:Create(Title, tweenInfo, {TextTransparency = 1}):Play()
 	TweenService:Create(SubTitle, tweenInfo, {TextTransparency = 1}):Play()
 	TweenService:Create(Status, tweenInfo, {TextTransparency = 1}):Play()
-	TweenService:Create(GameText, tweenInfo, {TextTransparency = 1}):Play()
-	TweenService:Create(GameTextGlow, tweenInfo, {TextTransparency = 1}):Play()
 	TweenService:Create(LoadingBarBG, tweenInfo, {BackgroundTransparency = 1}):Play()
 	TweenService:Create(LoadingBarFill, tweenInfo, {BackgroundTransparency = 1}):Play()
 	TweenService:Create(Logo, tweenInfo, {ImageTransparency = 1}):Play()
 	TweenService:Create(Glow, tweenInfo, {ImageTransparency = 1}):Play()
 
+	for _,v in ipairs(ParticlesFolder:GetChildren()) do
+		TweenService:Create(v, tweenInfo, {BackgroundTransparency = 1}):Play()
+	end
+
 	fadeOut:Play()
 	fadeOut.Completed:Connect(function()
+		for _,c in ipairs(particleConnections) do
+			pcall(function() c:Disconnect() end)
+		end
 		LoadingGui:Destroy()
 	end)
 end
