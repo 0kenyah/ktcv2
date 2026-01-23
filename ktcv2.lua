@@ -37,7 +37,6 @@ MainContainer.Position = UDim2.fromScale(0.5, 0.5)
 MainContainer.BackgroundTransparency = 1
 MainContainer.Parent = Background
 
--- Kyaaaa --
 local Title = Instance.new("TextLabel")
 Title.Name = "Title"
 Title.Size = UDim2.new(1, 0, 0, 50)
@@ -47,7 +46,6 @@ Title.Text = ""
 Title.TextTransparency = 1
 Title.Parent = MainContainer
 
--- KTC --
 local SubTitle = Instance.new("TextLabel")
 SubTitle.Name = "SubTitle"
 SubTitle.Size = UDim2.new(1, 0, 0, 20)
@@ -57,10 +55,9 @@ SubTitle.Text = ""
 SubTitle.TextTransparency = 1
 SubTitle.Parent = MainContainer
 
--- Pekeña decoración nazi --
 local Glow = Instance.new("ImageLabel")
 Glow.Name = "Glow"
-Glow.Size = UDim2.fromOffset(280, 140)
+Glow.Size = UDim2.fromOffset(260, 120)
 Glow.AnchorPoint = Vector2.new(0.5, 0.5)
 Glow.Position = UDim2.fromScale(0.5, 0.38)
 Glow.BackgroundTransparency = 1
@@ -71,22 +68,39 @@ Glow.ScaleType = Enum.ScaleType.Fit
 Glow.ZIndex = 1
 Glow.Parent = MainContainer
 
--- VXNITY TEAM --
 local Logo = Instance.new("ImageLabel")
 Logo.Name = "Logo"
-Logo.Size = UDim2.fromOffset(220, 80)
+Logo.Size = Glow.Size
 Logo.AnchorPoint = Vector2.new(0.5, 0.5)
-Logo.Position = UDim2.fromScale(0.5, 0.38)
+Logo.Position = Glow.Position
 Logo.BackgroundTransparency = 1
 Logo.Image = "rbxassetid://97314042970903"
 Logo.ScaleType = Enum.ScaleType.Fit
 Logo.ZIndex = 2
 Logo.Parent = MainContainer
 
+local GameTextGlow = Instance.new("TextLabel")
+GameTextGlow.Size = UDim2.new(1, 0, 0, 24)
+GameTextGlow.Position = UDim2.fromScale(0, 0.55)
+GameTextGlow.BackgroundTransparency = 1
+GameTextGlow.Text = "TPS (Street Soccer)"
+GameTextGlow.TextColor3 = Color3.fromRGB(0, 170, 255)
+GameTextGlow.TextSize = 14
+GameTextGlow.Font = Enum.Font.GothamMedium
+GameTextGlow.TextTransparency = 0.2
+GameTextGlow.ZIndex = 1
+GameTextGlow.Parent = MainContainer
+
+local GameText = GameTextGlow:Clone()
+GameText.TextColor3 = Color3.fromRGB(230, 230, 240)
+GameText.TextTransparency = 0
+GameText.ZIndex = 2
+GameText.Parent = MainContainer
+
 local LoadingBarBG = Instance.new("Frame")
 LoadingBarBG.Name = "LoadingBarBG"
 LoadingBarBG.Size = UDim2.new(0.8, 0, 0, 6)
-LoadingBarBG.Position = UDim2.fromScale(0.1, 0.65)
+LoadingBarBG.Position = UDim2.fromScale(0.1, 0.68)
 LoadingBarBG.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 LoadingBarBG.BorderSizePixel = 0
 LoadingBarBG.Parent = MainContainer
@@ -109,13 +123,19 @@ UICornerFill.Parent = LoadingBarFill
 local Status = Instance.new("TextLabel")
 Status.Name = "Status"
 Status.Size = UDim2.new(1, 0, 0, 30)
-Status.Position = UDim2.fromScale(0, 0.75)
+Status.Position = UDim2.fromScale(0, 0.76)
 Status.BackgroundTransparency = 1
 Status.Text = "Iniciando..."
 Status.TextColor3 = Color3.fromRGB(150, 150, 160)
 Status.TextSize = 14
 Status.Font = Enum.Font.GothamMedium
 Status.Parent = MainContainer
+
+TweenService:Create(
+	Glow,
+	TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+	{ImageTransparency = 0.55}
+):Play()
 
 local function updateProgress(progress, text)
 	TweenService:Create(
@@ -134,10 +154,10 @@ local function closeLoadingScreen()
 	TweenService:Create(Title, tweenInfo, {TextTransparency = 1}):Play()
 	TweenService:Create(SubTitle, tweenInfo, {TextTransparency = 1}):Play()
 	TweenService:Create(Status, tweenInfo, {TextTransparency = 1}):Play()
+	TweenService:Create(GameText, tweenInfo, {TextTransparency = 1}):Play()
+	TweenService:Create(GameTextGlow, tweenInfo, {TextTransparency = 1}):Play()
 	TweenService:Create(LoadingBarBG, tweenInfo, {BackgroundTransparency = 1}):Play()
 	TweenService:Create(LoadingBarFill, tweenInfo, {BackgroundTransparency = 1}):Play()
-
-	-- KTC ON TOP --
 	TweenService:Create(Logo, tweenInfo, {ImageTransparency = 1}):Play()
 	TweenService:Create(Glow, tweenInfo, {ImageTransparency = 1}):Play()
 
