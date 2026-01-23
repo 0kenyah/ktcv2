@@ -1755,7 +1755,7 @@ if UserInputService.TouchEnabled then
 	ToggleBtn.Position = UDim2.new(0.9, -60, 0.1, 0)
 	ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 	ToggleBtn.BorderSizePixel = 0
-	ToggleBtn.Image = "rbxassetid://12345678"
+	ToggleBtn.Image = "rbxassetid://97314042970903"
 	ToggleBtn.Active = true
 	ToggleBtn.Draggable = true
 	ToggleBtn.Parent = MobileGui
@@ -1772,7 +1772,7 @@ if UserInputService.TouchEnabled then
 	local IconText = Instance.new("TextLabel")
 	IconText.Size = UDim2.fromScale(1, 1)
 	IconText.BackgroundTransparency = 1
-	IconText.Text = "$"
+	IconText.Text = ""
 	IconText.TextColor3 = Color3.fromRGB(0, 170, 255)
 	IconText.TextSize = 24
 	IconText.Font = Enum.Font.GothamBold
