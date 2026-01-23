@@ -15,6 +15,7 @@ end
 LoadingGui.Parent = parent
 
 local Background = Instance.new("Frame")
+Background.Name = "Background"
 Background.Size = UDim2.fromScale(1, 1)
 Background.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
 Background.BorderSizePixel = 0
@@ -29,44 +30,50 @@ UIGradient.Rotation = 45
 UIGradient.Parent = Background
 
 local MainContainer = Instance.new("Frame")
+MainContainer.Name = "MainContainer"
 MainContainer.Size = UDim2.fromOffset(400, 300)
 MainContainer.AnchorPoint = Vector2.new(0.5, 0.5)
 MainContainer.Position = UDim2.fromScale(0.5, 0.5)
 MainContainer.BackgroundTransparency = 1
 MainContainer.Parent = Background
 
-
+-- Kyaaaa --
 local Title = Instance.new("TextLabel")
+Title.Name = "Title"
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.Position = UDim2.fromScale(0, 0.3)
 Title.BackgroundTransparency = 1
-Title.TextTransparency = 1
 Title.Text = ""
+Title.TextTransparency = 1
 Title.Parent = MainContainer
 
+-- KTC --
 local SubTitle = Instance.new("TextLabel")
+SubTitle.Name = "SubTitle"
 SubTitle.Size = UDim2.new(1, 0, 0, 20)
 SubTitle.Position = UDim2.fromScale(0, 0.45)
 SubTitle.BackgroundTransparency = 1
-SubTitle.TextTransparency = 1
 SubTitle.Text = ""
+SubTitle.TextTransparency = 1
 SubTitle.Parent = MainContainer
 
--- pequeña decoración XD --
+-- Pekeña decoración nazi --
 local Glow = Instance.new("ImageLabel")
+Glow.Name = "Glow"
 Glow.Size = UDim2.fromOffset(280, 140)
 Glow.AnchorPoint = Vector2.new(0.5, 0.5)
 Glow.Position = UDim2.fromScale(0.5, 0.38)
 Glow.BackgroundTransparency = 1
-Glow.Image = "rbxassetid://5028857084" -- soft radial glow
+Glow.Image = "rbxassetid://5028857084"
 Glow.ImageColor3 = Color3.fromRGB(0, 170, 255)
-Glow.ImageTransparency = 0.4
+Glow.ImageTransparency = 0.35
 Glow.ScaleType = Enum.ScaleType.Fit
 Glow.ZIndex = 1
 Glow.Parent = MainContainer
 
--- KTC X VXNITY --
+-- VXNITY TEAM --
 local Logo = Instance.new("ImageLabel")
+Logo.Name = "Logo"
 Logo.Size = UDim2.fromOffset(220, 80)
 Logo.AnchorPoint = Vector2.new(0.5, 0.5)
 Logo.Position = UDim2.fromScale(0.5, 0.38)
@@ -76,29 +83,31 @@ Logo.ScaleType = Enum.ScaleType.Fit
 Logo.ZIndex = 2
 Logo.Parent = MainContainer
 
-
 local LoadingBarBG = Instance.new("Frame")
+LoadingBarBG.Name = "LoadingBarBG"
 LoadingBarBG.Size = UDim2.new(0.8, 0, 0, 6)
 LoadingBarBG.Position = UDim2.fromScale(0.1, 0.65)
 LoadingBarBG.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 LoadingBarBG.BorderSizePixel = 0
 LoadingBarBG.Parent = MainContainer
 
-local c1 = Instance.new("UICorner")
-c1.CornerRadius = UDim.new(1, 0)
-c1.Parent = LoadingBarBG
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(1, 0)
+UICorner.Parent = LoadingBarBG
 
 local LoadingBarFill = Instance.new("Frame")
+LoadingBarFill.Name = "LoadingBarFill"
 LoadingBarFill.Size = UDim2.fromScale(0, 1)
 LoadingBarFill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 LoadingBarFill.BorderSizePixel = 0
 LoadingBarFill.Parent = LoadingBarBG
 
-local c2 = Instance.new("UICorner")
-c2.CornerRadius = UDim.new(1, 0)
-c2.Parent = LoadingBarFill
+local UICornerFill = Instance.new("UICorner")
+UICornerFill.CornerRadius = UDim.new(1, 0)
+UICornerFill.Parent = LoadingBarFill
 
 local Status = Instance.new("TextLabel")
+Status.Name = "Status"
 Status.Size = UDim2.new(1, 0, 0, 30)
 Status.Position = UDim2.fromScale(0, 0.75)
 Status.BackgroundTransparency = 1
@@ -108,7 +117,6 @@ Status.TextSize = 14
 Status.Font = Enum.Font.GothamMedium
 Status.Parent = MainContainer
 
--- KTC ON TOP NIGGA --
 local function updateProgress(progress, text)
 	TweenService:Create(
 		LoadingBarFill,
@@ -120,17 +128,21 @@ local function updateProgress(progress, text)
 end
 
 local function closeLoadingScreen()
-	local t = TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	local tweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	local fadeOut = TweenService:Create(Background, tweenInfo, {BackgroundTransparency = 1})
 
-	TweenService:Create(Logo, t, {ImageTransparency = 1}):Play()
-	TweenService:Create(Glow, t, {ImageTransparency = 1}):Play()
-	TweenService:Create(Status, t, {TextTransparency = 1}):Play()
-	TweenService:Create(LoadingBarBG, t, {BackgroundTransparency = 1}):Play()
-	TweenService:Create(LoadingBarFill, t, {BackgroundTransparency = 1}):Play()
+	TweenService:Create(Title, tweenInfo, {TextTransparency = 1}):Play()
+	TweenService:Create(SubTitle, tweenInfo, {TextTransparency = 1}):Play()
+	TweenService:Create(Status, tweenInfo, {TextTransparency = 1}):Play()
+	TweenService:Create(LoadingBarBG, tweenInfo, {BackgroundTransparency = 1}):Play()
+	TweenService:Create(LoadingBarFill, tweenInfo, {BackgroundTransparency = 1}):Play()
 
-	local fade = TweenService:Create(Background, t, {BackgroundTransparency = 1})
-	fade:Play()
-	fade.Completed:Connect(function()
+	-- KTC ON TOP --
+	TweenService:Create(Logo, tweenInfo, {ImageTransparency = 1}):Play()
+	TweenService:Create(Glow, tweenInfo, {ImageTransparency = 1}):Play()
+
+	fadeOut:Play()
+	fadeOut.Completed:Connect(function()
 		LoadingGui:Destroy()
 	end)
 end
