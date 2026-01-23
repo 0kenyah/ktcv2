@@ -1511,38 +1511,49 @@ do
 		end
 	)
 	
-	addToggle(
-    addToggle(
+local NoDelayV2Connection
+
+addToggle(
     SectionPresets,
-    "0_Kenyah OP React + No Delay V2",
+    "0_Kenyah OP React ",
     false,
-    "Kenyah special OP React configuration + smooth ball control",
+    "Op  react, 0_Kenyah",
     function(value)
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        local LocalPlayer = Players.LocalPlayer
+
+        -- KENYAH ON TOP --
         AutoReactRange = value and 6 or 4.4
-        ReactVelocity = value and 250 or 170
+        ReactVelocity = value and 300 or 170
         ReactTickRate = value and 0.02 or 0.05
         AntiReach = value and true or false
         HitChance = value and 100 or 80
-        notify("Reacts", value and "0_Kenyah OP React Enabled" or "0_Kenyah OP React Disabled (Reset to Default)")
 
+        notify("Reacts", value and "0_Kenyah OP React Enabled" or "0_Kenyah OP React Disabled (Reset)")
+
+        
         if value then
             if NoDelayV2Connection then
                 NoDelayV2Connection:Disconnect()
             end
 
-            NoDelayV2Connection = game:GetService("RunService").Heartbeat:Connect(function(dt)
-                local char = game:GetService("Players").LocalPlayer.Character
+            NoDelayV2Connection = RunService.Heartbeat:Connect(function(dt)
+                local char = LocalPlayer.Character
                 if not char then return end
-
-                local ball = workspace:FindFirstChild("TPSSystem") and workspace.TPSSystem:FindFirstChild("TPS")
-                if not ball then return end
 
                 local foot = char:FindFirstChild("RightFoot") or char:FindFirstChild("Right Leg")
                 if not foot then return end
 
-                local target = foot.CFrame * CFrame.new(0, -0.35, 1.8)
-                ball.CFrame = ball.CFrame:Lerp(target, math.clamp(dt * 20, 0, 1))
-                local vel = (target.Position - ball.Position) / dt
+                local ball = workspace:FindFirstChild("TPSSystem") and workspace.TPSSystem:FindFirstChild("TPS")
+                if not ball then return end
+
+                
+                local targetCFrame = foot.CFrame * CFrame.new(0, -0.35, 1.5)
+                ball.CFrame = ball.CFrame:Lerp(targetCFrame, math.clamp(dt * 25, 0, 1))
+
+            
+                local vel = (targetCFrame.Position - ball.Position) / math.max(dt, 0.001)
                 ball.AssemblyLinearVelocity = vel
                 ball.AssemblyAngularVelocity = Vector3.zero
             end)
@@ -1553,7 +1564,7 @@ do
             end
         end
     end
-		)
+	)
                         
 
 do
