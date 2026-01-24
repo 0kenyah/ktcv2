@@ -1575,7 +1575,7 @@ addToggle(
 		end
 	end
 )
-
+end
 
 do
 	local SectionPresets = createSection(TabReacts, "React Presets")
