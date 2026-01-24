@@ -1653,18 +1653,18 @@ do
 	function(value)
 		if value then
 			AutoReactRange = 5
-			ReactVelocity = 700
+			ReactVelocity = 2500
 			ReactTickRate = 0
 			FrontReact = true
-			FrontOffset = 2.5
+			FrontOffset = 4.0
 			InstantTouchCount = true
 			SkillBoost = true
-			SkillSpeed = 1
+			SkillSpeed = 4
 			notify("Reacts", "Kenyah React  OP Loaded")
 		else
 			AutoReactRange = 4.4
-			ReactVelocity = 300
-			ReactTickRate = 0.05
+			ReactVelocity = 900
+			ReactTickRate = 0.01
 			FrontReact = false
 			FrontOffset = 0
 			InstantTouchCount = false
