@@ -1525,6 +1525,54 @@ addToggle(
 	)
 end
 
+local SectionCholo = createSection(TabReacts, "Cholo React")
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+local Player = Players.LocalPlayer
+local CholoReactConnection
+
+addToggle(
+	SectionCholo,
+	"Cholo React",
+	false,
+	"Continuously apply Velocity (260, 0, 220, 0)",
+	function(value)
+		if value then
+			if CholoReactConnection then CholoReactConnection:Disconnect() end
+
+			local TPSSystem = Workspace:FindFirstChild("TPSSystem")
+			local TPS = TPSSystem and TPSSystem:FindFirstChild("TPS")
+
+			CholoReactConnection = RunService.Heartbeat:Connect(function()
+				if not TPS then return end
+
+				local Character = Player.Character
+				if not Character then return end
+
+				local Root = Character:FindFirstChild("HumanoidRootPart")
+				if not Root then return end
+
+				local dist = (Root.Position - TPS.Position).Magnitude
+				if dist < 12 then
+					TPS.Velocity = (Root.CFrame.LookVector * 260)
+						+ Vector3.new(0, 220, 0)
+				end
+			end)
+
+			notify("Success", "Cholo React Enabled")
+		else
+			if CholoReactConnection then
+				CholoReactConnection:Disconnect()
+				CholoReactConnection = nil
+			end
+			notify("Success", "Cholo React Disabled")
+		end
+	end
+)
+
 do
 	local SectionPresets = createSection(TabReacts, "React Presets")
 	
