@@ -720,19 +720,21 @@ local FPSLabel = nil
 local FPSConnection = nil
 
 addToggle(MiscSection, "Mostrar FPS", false, "", function(state)
+    local RunService = game:GetService("RunService")
+
     if state then
         if not FPSLabel then
             FPSLabel = Instance.new("TextLabel")
-            FPSLabel.Size = UDim2.new(0, 100, 0, 30)
-            FPSLabel.Position = UDim2.new(0, 10, 0, 10)
+            FPSLabel.Size = UDim2.new(0, 80, 0, 25)
             FPSLabel.BackgroundTransparency = 0.5
             FPSLabel.BackgroundColor3 = Color3.fromRGB(0,0,0)
             FPSLabel.TextColor3 = Color3.fromRGB(255,255,255)
             FPSLabel.TextScaled = true
-            FPSLabel.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+            FPSLabel.Text = "FPS: 0"
+            FPSLabel.ZIndex = 10
+            FPSLabel.Parent = MiscSection.UISection or MiscSection -- asigna al contenedor correcto
         end
 
-        local RunService = game:GetService("RunService")
         local lastTime = tick()
         FPSConnection = RunService.RenderStepped:Connect(function()
             local currentTime = tick()
