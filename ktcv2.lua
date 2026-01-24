@@ -1674,10 +1674,37 @@ do
 		end
 	end
 	)
-end
 
-                        
-
+	addToggle(
+	SectionPresets,
+	"Tmbuzzz React",
+	false,
+	"Op Velocity Of the ball",
+	function(value)
+		if value then
+			AutoReactRange = 5.2
+			ReactVelocity = 2200
+			ReactTickRate = 0.01
+			FrontReact = true
+			FrontOffset = 2.9
+			InstantTouchCount = true
+			SkillBoost = true
+			SkillSpeed = 1
+			notify("Reacts", "Tmbuzz React  OP Loaded")
+		else
+			AutoReactRange = 4.8
+			ReactVelocity = 800
+			ReactTickRate = 0.01
+			FrontReact = false
+			FrontOffset = 0
+			InstantTouchCount = false
+			SkillBoost = true
+			SkillSpeed = 3
+			notify("Reacts", "Tmbuzzz React Disabled (Reset to Default)")
+		end
+	end
+	)
+                       
 do
 	local SectionGamepassFeatures = createSection(TabGamepass, "Features")
 	
