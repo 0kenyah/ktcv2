@@ -715,16 +715,10 @@ local TabReacts = createTab("Reacts", "users")
 local TabMisc = createTab("Misc", "circle-ellipsis")
 
 local MiscSection = createSection(TabMisc, "Optimización")
+local MiscSection = createSection(TabMisc, "Optimización")
 
 addToggle(MiscSection, "Optimizar Rendimiento", false, "", function(state)
     if state then
-        task.spawn(function()
-            RunService.Heartbeat:Connect(function()
-                RunService:Set3dRenderingEnabled(false)
-                task.wait()
-                RunService:Set3dRenderingEnabled(true)
-            end)
-        end)
         for _, v in workspace:GetDescendants() do
             if v:IsA("Part") or v:IsA("MeshPart") or v:IsA("UnionOperation") then
                 v.Material = Enum.Material.Plastic
@@ -734,41 +728,11 @@ addToggle(MiscSection, "Optimizar Rendimiento", false, "", function(state)
         game:GetService("Lighting").QualityLevel = 1
         settings().Rendering.QualityLevel = 1
     else
-        RunService.Heartbeat:Connect(function()
-            RunService:Set3dRenderingEnabled(true)
-        end)
         game:GetService("Lighting").GlobalShadows = true
         game:GetService("Lighting").QualityLevel = 10
         settings().Rendering.QualityLevel = 10
     end
 end)
-
-addToggle(MiscSection, "Ping Bajo (10-30ms)", false, "", function(state)
-    if state then
-        task.spawn(function()
-            while wait() do
-                if not PingBajoToggle.State then break end
-                setscriptstats("NetworkPing", math.random(10, 30))
-            end
-        end)
-    else
-        setscriptstats("NetworkPing", math.random(50, 100))
-    end
-end)
-
-addToggle(MiscSection, "Ping Alto (260-350ms)", false, "", function(state)
-    if state then
-        task.spawn(function()
-            while wait() do
-                if not PingAltoToggle.State then break end
-                setscriptstats("NetworkPing", math.random(260, 350))
-            end
-        end)
-    else
-        setscriptstats("NetworkPing", math.random(50, 100))
-    end
-end)
-
 
 local TabGamepass = createTab("Gamepass", "badge-dollar-sign")
 
