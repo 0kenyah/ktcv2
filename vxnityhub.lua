@@ -758,6 +758,107 @@ addToggle(
     end
 )
 
+local MiscSection = createSection(TabMisc, "Server")
+
+local RejoinToggle = false
+addToggle(
+    MiscSection,
+    "Rejoin Game",
+    "Rejoin current server",
+    false,
+    function(state)
+        if state then
+            local TeleportService = game:GetService("TeleportService")
+            local Players = game:GetService("Players")
+            TeleportService:Teleport(game.PlaceId, Players.LocalPlayer)
+        end
+        RejoinToggle = false
+    end
+)
+
+local ServerHopToggle = false
+addToggle(
+    MiscSection,
+    "Server Hop",
+    "Join a different server",
+    false,
+    function(state)
+        if not state then return end
+
+        local TeleportService = game:GetService("TeleportService")
+        local HttpService = game:GetService("HttpService")
+        local Players = game:GetService("Players")
+
+        local PlaceId = game.PlaceId
+        local JobId = game.JobId
+        local cursor = ""
+
+        for _ = 1, 5 do
+            local success, response = pcall(function()
+                return game:HttpGet(
+                    "https://games.roblox.com/v1/games/" .. PlaceId ..
+                    "/servers/Public?sortOrder=Asc&limit=100&cursor=" .. cursor
+                )
+            end)
+
+            if not success then break end
+
+            local data = HttpService:JSONDecode(response)
+
+            for _, server in ipairs(data.data) do
+                if server.playing < server.maxPlayers and server.id ~= JobId then
+                    TeleportService:TeleportToPlaceInstance(PlaceId, server.id, Players.LocalPlayer)
+                    return
+                end
+            end
+
+            cursor = data.nextPageCursor or ""
+            if cursor == "" then break end
+        end
+    end
+)
+
+local LowServerHopToggle = false
+addToggle(
+    MiscSection,
+    "Server Hop (Low Players)",
+    "Join almost empty server",
+    false,
+    function(state)
+        if not state then return end
+
+        local TeleportService = game:GetService("TeleportService")
+        local HttpService = game:GetService("HttpService")
+        local Players = game:GetService("Players")
+
+        local PlaceId = game.PlaceId
+        local JobId = game.JobId
+        local cursor = ""
+
+        for _ = 1, 5 do
+            local success, response = pcall(function()
+                return game:HttpGet(
+                    "https://games.roblox.com/v1/games/" .. PlaceId ..
+                    "/servers/Public?sortOrder=Asc&limit=100&cursor=" .. cursor
+                )
+            end)
+
+            if not success then break end
+
+            local data = HttpService:JSONDecode(response)
+
+            for _, server in ipairs(data.data) do
+                if server.playing <= 4 and server.id ~= JobId then
+                    TeleportService:TeleportToPlaceInstance(PlaceId, server.id, Players.LocalPlayer)
+                    return
+                end
+            end
+
+            cursor = data.nextPageCursor or ""
+            if cursor == "" then break end
+        end
+    end
+)
 local TabGamepass = createTab("Gamepass", "badge-dollar-sign")
 
 local TabSettings = createTab("Settings", "settings")
