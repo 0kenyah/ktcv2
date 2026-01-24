@@ -715,22 +715,42 @@ local TabReacts = createTab("Reacts", "users")
 local TabMisc = createTab("Misc", "circle-ellipsis")
 
 local MiscSection = createSection(TabMisc, "Optimización")
-local MiscSection = createSection(TabMisc, "Optimización")
 
-addToggle(MiscSection, "Optimizar Rendimiento", false, "", function(state)
+local FPSLabel = nil
+local FPSConnection = nil
+
+addToggle(MiscSection, "Mostrar FPS", false, "", function(state)
     if state then
-        for _, v in workspace:GetDescendants() do
-            if v:IsA("Part") or v:IsA("MeshPart") or v:IsA("UnionOperation") then
-                v.Material = Enum.Material.Plastic
-            end
+        if not FPSLabel then
+            FPSLabel = Instance.new("TextLabel")
+            FPSLabel.Size = UDim2.new(0, 100, 0, 30)
+            FPSLabel.Position = UDim2.new(0, 10, 0, 10)
+            FPSLabel.BackgroundTransparency = 0.5
+            FPSLabel.BackgroundColor3 = Color3.fromRGB(0,0,0)
+            FPSLabel.TextColor3 = Color3.fromRGB(255,255,255)
+            FPSLabel.TextScaled = true
+            FPSLabel.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
         end
-        game:GetService("Lighting").GlobalShadows = false
-        game:GetService("Lighting").QualityLevel = 1
-        settings().Rendering.QualityLevel = 1
+
+        local RunService = game:GetService("RunService")
+        local lastTime = tick()
+        FPSConnection = RunService.RenderStepped:Connect(function()
+            local currentTime = tick()
+            local fps = math.floor(1 / (currentTime - lastTime))
+            lastTime = currentTime
+            if FPSLabel then
+                FPSLabel.Text = "FPS: "..fps
+            end
+        end)
     else
-        game:GetService("Lighting").GlobalShadows = true
-        game:GetService("Lighting").QualityLevel = 10
-        settings().Rendering.QualityLevel = 10
+        if FPSConnection then
+            FPSConnection:Disconnect()
+            FPSConnection = nil
+        end
+        if FPSLabel then
+            FPSLabel:Destroy()
+            FPSLabel = nil
+        end
     end
 end)
 
