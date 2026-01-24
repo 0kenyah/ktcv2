@@ -1332,78 +1332,6 @@ do
 	end
 end
 
-local SectionTmbuzzz = createSection(TabReacts, "Tmbuzzz React")
-local TmbuzzzReactConnection = nil
-
-addToggle(
-	SectionPresets,
-	"Tmbuzzz React",
-	false,
-	"Op Velocity Of the ball",
-	function(value)
-		if value then
-			AutoReactRange = 5.2
-			ReactVelocity = 2200
-			ReactTickRate = 0.01
-			FrontReact = true
-			FrontOffset = 2.9
-			InstantTouchCount = true
-			SkillBoost = true
-			SkillSpeed = 1
-
-			if TmbuzzzReactConnection then
-				TmbuzzzReactConnection:Disconnect()
-			end
-
-			TmbuzzzReactConnection = RunService.Heartbeat:Connect(function()
-				local character = Players.LocalPlayer.Character
-				local hrp = character and character:FindFirstChild("HumanoidRootPart")
-				if not hrp then return end
-
-				local TPSSystem = Workspace:FindFirstChild("TPSSystem")
-				local ball = TPSSystem and TPSSystem:FindFirstChild("TPS")
-				if not ball then return end
-
-				if (ball.Position - hrp.Position).Magnitude > AutoReactRange then return end
-
-				if sethiddenproperty then
-					pcall(sethiddenproperty, ball, "NetworkIsSleeping", false)
-				end
-
-				local dir
-				if FrontReact then
-					dir = hrp.CFrame.LookVector
-				else
-					dir = (ball.Position - hrp.Position).Unit
-				end
-
-				local targetPos = hrp.Position + dir * FrontOffset
-				local pullDir = (targetPos - ball.Position).Unit
-
-				ball.Velocity = pullDir * ReactVelocity
-			end)
-
-			notify("Reacts", "Tmbuzz React OP Loaded")
-		else
-			if TmbuzzzReactConnection then
-				TmbuzzzReactConnection:Disconnect()
-				TmbuzzzReactConnection = nil
-			end
-
-			AutoReactRange = 4.8
-			ReactVelocity = 800
-			ReactTickRate = 0.01
-			FrontReact = false
-			FrontOffset = 0
-			InstantTouchCount = false
-			SkillBoost = false
-			SkillSpeed = 3
-
-			notify("Reacts", "Tmbuzzz React Disabled (Reset to Default)")
-		end
-	end
-)
-
 do
 	local SectionReduceDelay = createSection(TabReacts, "Reduce Ball Delay")
 	addButton(SectionReduceDelay, "Reduce Ball Delay", "Reduce ball delay", function()
@@ -1725,18 +1653,18 @@ do
 	function(value)
 		if value then
 			AutoReactRange = 5
-			ReactVelocity = 700
+			ReactVelocity = 2500
 			ReactTickRate = 0
 			FrontReact = true
-			FrontOffset = 2.5
+			FrontOffset = 4.0
 			InstantTouchCount = true
 			SkillBoost = true
-			SkillSpeed = 1
+			SkillSpeed = 5
 			notify("Reacts", "Kenyah React  OP Loaded")
 		else
-			AutoReactRange = 4.4
-			ReactVelocity = 300
-			ReactTickRate = 0.05
+			AutoReactRange = 4.7
+			ReactVelocity = 1200
+			ReactTickRate = 0.01
 			FrontReact = false
 			FrontOffset = 0
 			InstantTouchCount = false
