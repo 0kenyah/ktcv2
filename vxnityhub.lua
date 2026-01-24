@@ -714,47 +714,45 @@ local TabMossHead = createTab("Moss & Head", "eye")
 local TabReacts = createTab("Reacts", "users")
 local TabMisc = createTab("Misc", "circle-ellipsis")
 
-local MiscSection = createSection(TabMisc, "Optimización")
+local MiscSection = createSection(TabMisc, "AutoFarm")
 
-local FPSLabel = nil
-local FPSConnection = nil
+local AutoPassXP = false
+local PassRemote = nil
 
-addToggle(MiscSection, "Mostrar FPS", false, "", function(state)
-    local RunService = game:GetService("RunService")
-
-    if state then
-        if not FPSLabel then
-            FPSLabel = Instance.new("TextLabel")
-            FPSLabel.Size = UDim2.new(0, 80, 0, 25)
-            FPSLabel.BackgroundTransparency = 0.5
-            FPSLabel.BackgroundColor3 = Color3.fromRGB(0,0,0)
-            FPSLabel.TextColor3 = Color3.fromRGB(255,255,255)
-            FPSLabel.TextScaled = true
-            FPSLabel.Text = "FPS: 0"
-            FPSLabel.ZIndex = 10
-            FPSLabel.Parent = MiscSection.UISection or MiscSection -- asigna al contenedor correcto
-        end
-
-        local lastTime = tick()
-        FPSConnection = RunService.RenderStepped:Connect(function()
-            local currentTime = tick()
-            local fps = math.floor(1 / (currentTime - lastTime))
-            lastTime = currentTime
-            if FPSLabel then
-                FPSLabel.Text = "FPS: "..fps
-            end
-        end)
-    else
-        if FPSConnection then
-            FPSConnection:Disconnect()
-            FPSConnection = nil
-        end
-        if FPSLabel then
-            FPSLabel:Destroy()
-            FPSLabel = nil
+task.spawn(function()
+    for _, v in ipairs(game:GetDescendants()) do
+        if v:IsA("RemoteEvent") and v.Name:lower():find("pass") then
+            PassRemote = v
+            break
         end
     end
 end)
+
+task.spawn(function()
+    while true do
+        task.wait(math.random(55, 75))
+        if AutoPassXP and PassRemote then
+            pcall(function()
+                PassRemote:FireServer(false)
+            end)
+        end
+    end
+end)
+
+addToggle(
+    MiscSection,
+    "Auto Pass XP",
+    false,
+    "auto farm passing, (test)",
+    function(state)
+        AutoPassXP = state
+        if state then
+            notify("TPS", "Auto Pass XP ON")
+        else
+            notify("TPS", "Auto Pass XP OFF")
+        end
+    end
+)
 
 local TabGamepass = createTab("Gamepass", "badge-dollar-sign")
 
