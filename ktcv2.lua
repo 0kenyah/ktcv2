@@ -1536,9 +1536,9 @@ local CholoReactConnection
 
 addToggle(
 	SectionCholo,
-	"Cholo React",
+	"Cholo React 「OP」",
 	false,
-	"Continuously apply Velocity (260, 0, 220, 0)",
+	"Continuously apply Velocity.",
 	function(value)
 		if value then
 			if CholoReactConnection then CholoReactConnection:Disconnect() end
@@ -1555,10 +1555,13 @@ addToggle(
 				local Root = Character:FindFirstChild("HumanoidRootPart")
 				if not Root then return end
 
+				local dir = (Root.Position - TPS.Position).Unit
 				local dist = (Root.Position - TPS.Position).Magnitude
-				if dist < 12 then
-					TPS.Velocity = (Root.CFrame.LookVector * 260)
-						+ Vector3.new(0, 220, 0)
+
+				if dist < 10 then
+					TPS.Velocity =
+						(dir * 420) +
+						Vector3.new(0, 360, 0)
 				end
 			end)
 
@@ -1572,6 +1575,7 @@ addToggle(
 		end
 	end
 )
+
 
 do
 	local SectionPresets = createSection(TabReacts, "React Presets")
