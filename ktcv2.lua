@@ -1396,7 +1396,7 @@ addToggle(
 			FrontReact = false
 			FrontOffset = 0
 			InstantTouchCount = false
-			SkillBoost = true
+			SkillBoost = false
 			SkillSpeed = 3
 
 			notify("Reacts", "Tmbuzzz React Disabled (Reset to Default)")
