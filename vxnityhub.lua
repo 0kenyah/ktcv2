@@ -859,6 +859,121 @@ addToggle(
         end
     end
 )
+local MiscSection = createSection(TabMisc, "Perspective")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+local HideReachConnection = nil
+local FakeBallWeld = nil
+
+addToggle(
+    MiscSection,
+    "Hide Reach",
+    false,
+    "test",
+    function(value)
+        if value then
+            if HideReachConnection then HideReachConnection:Disconnect() end
+
+            HideReachConnection = RunService.RenderStepped:Connect(function()
+                local character = LocalPlayer.Character
+                if not character then return end
+
+                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                if not humanoidRootPart then return end
+
+                local ball = workspace:FindFirstChild("Ball")
+                if not ball then return end
+
+                if not FakeBallWeld then
+                    FakeBallWeld = Instance.new("WeldConstraint")
+                    FakeBallWeld.Part0 = humanoidRootPart
+                    FakeBallWeld.Part1 = ball
+                    FakeBallWeld.Parent = ball
+                end
+
+                ball.CFrame = humanoidRootPart.CFrame * CFrame.new(0, -2.6, -1.2)
+                ball.AssemblyLinearVelocity = Vector3.zero
+                ball.AssemblyAngularVelocity = Vector3.zero
+            end)
+        else
+            if HideReachConnection then
+                HideReachConnection:Disconnect()
+                HideReachConnection = nil
+            end
+
+            if FakeBallWeld then
+                FakeBallWeld:Destroy()
+                FakeBallWeld = nil
+            end
+        end
+    end
+)
+local MiscSection = createSection(TabMisc, "Perspective")
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local HideReachConnection = nil
+local FakeBall = nil
+
+addToggle(
+    MiscSection,
+    "Hide Reach V2",
+    false,
+    "Ocultar reach (test)",
+    function(value)
+        if value then
+            if HideReachConnection then HideReachConnection:Disconnect() end
+
+            HideReachConnection = RunService.RenderStepped:Connect(function()
+                local char = LocalPlayer.Character
+                if not char then return end
+
+                local hrp = char:FindFirstChild("HumanoidRootPart")
+                if not hrp then return end
+
+                local realBall = workspace:FindFirstChild("Ball")
+                if not realBall then return end
+
+                if not FakeBall then
+                    FakeBall = realBall:Clone()
+                    FakeBall.Anchored = true
+                    FakeBall.CanCollide = false
+                    FakeBall.Parent = workspace
+
+                    for _, v in FakeBall:GetDescendants() do
+                        if v:IsA("BasePart") then
+                            v.CanCollide = false
+                        end
+                    end
+                end
+
+                realBall.LocalTransparencyModifier = 1
+                FakeBall.CFrame = hrp.CFrame * CFrame.new(0, -2.6, -1.2)
+            end)
+        else
+            if HideReachConnection then
+                HideReachConnection:Disconnect()
+                HideReachConnection = nil
+            end
+
+            if FakeBall then
+                FakeBall:Destroy()
+                FakeBall = nil
+            end
+
+            local realBall = workspace:FindFirstChild("Ball")
+            if realBall then
+                realBall.LocalTransparencyModifier = 0
+            end
+        end
+    end
+)
+
 local TabGamepass = createTab("Gamepass", "badge-dollar-sign")
 
 local TabSettings = createTab("Settings", "settings")
