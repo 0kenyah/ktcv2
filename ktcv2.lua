@@ -1332,7 +1332,9 @@ do
 	end
 end
 
+local SectionTmbuzzz = createSection(TabReacts, "Tmbuzzz React")
 local TmbuzzzReactConnection = nil
+
 addToggle(
 	SectionPresets,
 	"Tmbuzzz React",
@@ -1401,6 +1403,7 @@ addToggle(
 		end
 	end
 )
+
 do
 	local SectionReduceDelay = createSection(TabReacts, "Reduce Ball Delay")
 	addButton(SectionReduceDelay, "Reduce Ball Delay", "Reduce ball delay", function()
