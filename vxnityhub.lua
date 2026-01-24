@@ -733,7 +733,11 @@ task.spawn(function()
         task.wait(math.random(55, 75))
         if AutoPassXP and PassRemote then
             pcall(function()
-                PassRemote:FireServer(false)
+                PassRemote:FireServer({
+                    Power = 50,
+                    Direction = Vector3.new(0, 0, -1),
+                    Type = "Pass"
+                })
             end)
         end
     end
@@ -743,7 +747,7 @@ addToggle(
     MiscSection,
     "Auto Pass XP",
     false,
-    "auto farm passing, (test)",
+    "Farm from passing XP (test)",
     function(state)
         AutoPassXP = state
         if state then
