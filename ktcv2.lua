@@ -1534,44 +1534,47 @@ do
 	end
 
 	addToggle(
-		SectionPresets,
-		"No Ball Delay (Magnet)",
-		false,
-		"Optimized React: Pulls ball slightly towards you (Low Detectability)",
-		function(value)
-			if value then
-				-- Optimization for Mobile
-				if settings().Network then
-					settings().Network.IncomingReplicationLag = 0
-				end
-				
-				-- Magnet Logic (Less aggressive than Glue)
-				if NoDelayConnection then NoDelayConnection:Disconnect() end
-				NoDelayConnection = RunService.Heartbeat:Connect(function()
-					local ball = getBall()
-					local char = Players.LocalPlayer.Character
-					local hrp = char and char:FindFirstChild("HumanoidRootPart")
-					
-					if ball and hrp then
-						local dist = (ball.Position - hrp.Position).Magnitude
-						-- Only activate if ball is very close (dribbling range)
-						if dist < 5 then 
-							if sethiddenproperty then
-								pcall(sethiddenproperty, ball, "NetworkIsSleeping", false)
-							end
-							-- Instead of freezing velocity, we just nudge it towards player
-							-- This feels like "sticky" control without freezing the ball
-							local direction = (hrp.Position - ball.Position).Unit
-							ball.Velocity = ball.Velocity + (direction * 2) -- Subtle pull
-						end
-					end
-				end)
-				notify("Reacts", "Magnet Mode Enabled")
-			else
-				if NoDelayConnection then NoDelayConnection:Disconnect() end
-				notify("Reacts", "Magnet Mode Disabled")
+	SectionPresets,
+	"No Ball Delay (Magnet)",
+	false,
+	"Optimized React: Pulls ball slightly towards you (Low Detectability)",
+	function(value)
+		if value then
+			if settings().Network then
+				settings().Network.IncomingReplicationLag = 0
 			end
+
+			if NoDelayConnection then NoDelayConnection:Disconnect() end
+			NoDelayConnection = RunService.Heartbeat:Connect(function()
+				local ball = getBall()
+				local char = Players.LocalPlayer.Character
+				local hrp = char and char:FindFirstChild("HumanoidRootPart")
+
+				if ball and hrp then
+					local dist = (ball.Position - hrp.Position).Magnitude
+					if dist < 6 then
+						if sethiddenproperty then
+							pcall(sethiddenproperty, ball, "NetworkIsSleeping", false)
+						end
+
+						local dir = ball.Velocity.Magnitude > 1 and ball.Velocity.Unit or hrp.CFrame.LookVector
+						local frontPos = hrp.Position + dir * 2.4
+						local pullDir = (frontPos - ball.Position).Unit
+
+						ball.Velocity = ball.Velocity + (pullDir * 7)
+					end
+				end
+			end)
+
+			notify("Reacts", "Magnet Mode Enabled")
+		else
+			if NoDelayConnection then
+				NoDelayConnection:Disconnect()
+				NoDelayConnection = nil
+			end
+			notify("Reacts", "Magnet Mode Disabled")
 		end
+	end
 	)
 	
 	addToggle(
@@ -1591,21 +1594,33 @@ do
 	)
 	
 	addToggle(
-		SectionPresets,
-		"0_Kenyah React",
-		false,
-		"0_Kenyah special configuration(OP)",
-		function(value)
-			if value then
-				AutoReactRange = 4.5
-				ReactVelocity = 300
-				notify("Reacts", "Kenyah React Config Loaded")
-			else
-				AutoReactRange = 4.4
-				ReactVelocity = 300
-				notify("Reacts", "Kenyah React Disabled (Reset to Default)")
-			end
+	SectionPresets,
+	"0_Kenyah React",
+	false,
+	"0_Kenyah  OP",
+	function(value)
+		if value then
+			AutoReactRange = 5
+			ReactVelocity = 700
+			ReactTickRate = 0
+			FrontReact = true
+			FrontOffset = 2.5
+			InstantTouchCount = true
+			SkillBoost = true
+			SkillSpeed = 1
+			notify("Reacts", "Kenyah React  OP Loaded")
+		else
+			AutoReactRange = 4.4
+			ReactVelocity = 300
+			ReactTickRate = 0.05
+			FrontReact = false
+			FrontOffset = 0
+			InstantTouchCount = false
+			SkillBoost = false
+			SkillSpeed = 0
+			notify("Reacts", "Kenyah React Disabled (Reset to Default)")
 		end
+	end
 	)
 end
 
