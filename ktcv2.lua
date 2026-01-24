@@ -1484,7 +1484,7 @@ addToggle(
 		SectionFoxtede,
 		"Foxtede React",
 		false,
-		"Continuously apply Velocity (150, 150, 110)",
+		"Continuously apply Velocity (180, 150, 110)",
 		function(value)
 			if value then
 				if FoxtedeReactConnection then FoxtedeReactConnection:Disconnect() end
@@ -1495,7 +1495,7 @@ addToggle(
 						local Character = Players.LocalPlayer.Character
 						local Root = Character and Character:FindFirstChild("HumanoidRootPart")
 						if Root and (Root.Position - TPS.Position).Magnitude < 15 then
-							TPS.Velocity = Vector3.new(150, 150, 110)
+							TPS.Velocity = Vector3.new(180, 150, 110)
 						end
 					end
 				end)
@@ -1558,10 +1558,10 @@ addToggle(
 				local dir = (Root.Position - TPS.Position).Unit
 				local dist = (Root.Position - TPS.Position).Magnitude
 
-				if dist < 10 then
+				if dist < 8 then
 					TPS.Velocity =
-						(dir * 420) +
-						Vector3.new(0, 360, 0)
+						(dir * 620) +
+						Vector3.new(10, 860, 0)
 				end
 			end)
 
