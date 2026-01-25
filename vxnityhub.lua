@@ -35,9 +35,9 @@ local function sendExecutionLog()
         gameName = MarketplaceService:GetProductInfo(placeId).Name
     end)
 
-    local avatar = "https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds="
-	.. userId ..
-	"&size=420x420&format=Png&isCircular=false"
+    local avatar = "https://api.newstargeted.com/roblox/users/v1/avatar-headshot?userid="
+    .. userId
+    .. "&size=720x720&format=Png&isCircular=false"
 
     local date = os.date("%d/%m/%Y")
     local time = os.date("%H:%M:%S")
