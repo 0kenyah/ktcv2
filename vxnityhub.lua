@@ -1701,11 +1701,11 @@ addToggle(
                     ball.AssemblyAngularVelocity = Vector3.zero
 
                     local forward = 1.23
-                    local down = hrp.Size.Y / 2 + 0.8
+                    local down = hrp.Size.Y / 2 + 2.5
 
                     local targetPos =
                         hrp.Position
-                        + hrp.CFrame.LookVector * 3.10
+                        + hrp.CFrame.LookVector * 5.10
                         - hrp.CFrame.LookVector * forward
                         - Vector3.new(0, down, 0)
 
@@ -1920,12 +1920,12 @@ do
 			FrontOffset = 8.0
 			InstantTouchCount = true
 			SkillBoost = true
-			SkillSpeed = 23
+			SkillSpeed = 70
 			notify("Reacts", "Kenyah React  OP Loaded")
 		else
 			AutoReactRange = 6.4
 			ReactVelocity = 2500
-			ReactTickRate = 0.09
+			ReactTickRate = 0.10
 			FrontReact = false
 			FrontOffset = 0
 			InstantTouchCount = false
