@@ -1,81 +1,69 @@
-local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
 local MarketplaceService = game:GetService("MarketplaceService")
+local Players = game:GetService("Players")
 
 local LocalPlayer = Players.LocalPlayer
-
 local WebhookURL = "https://discord.com/api/webhooks/1464923263443402886/AMqNuy3ujxdQalbS9-bf6aRpanpJqMoWIFKtpM1JOPWCMspDsb_135CPca1UsLg0bYlg"
 
-local function getExecutor()
-    return identifyexecutor and identifyexecutor() or
-           getexecutorname and getexecutorname() or
-           "Unknown"
-end
+local device = (UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled) and "Mobile" or "PC"
+local executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
 
-local function getDevice()
-    if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
-        return "Mobile"
-    else
-        return "PC"
-    end
-end
+local username = (LocalPlayer and LocalPlayer.Name) or "Unknown Player"
+local userId = (LocalPlayer and LocalPlayer.UserId) or 0
+local placeId = game.PlaceId
 
-local function sendExecutionLog()
-    if not syn and not http_request and not request then return end
+local gameName = "Unknown Game"
+pcall(function()
+	gameName = MarketplaceService:GetProductInfo(placeId).Name
+end)
 
-    local executor = getExecutor()
-    local device = getDevice()
-    local userId = LocalPlayer.UserId
-    local username = LocalPlayer.Name
-    local placeId = game.PlaceId
-    local gameName = "Unknown"
+local avatar =
+	"https://api.newstargeted.com/roblox/users/v1/avatar-headshot?userid="
+	.. userId ..
+	"&size=720x720&format=Png&isCircular=false"
 
-    pcall(function()
-        gameName = MarketplaceService:GetProductInfo(placeId).Name
-    end)
+local date = os.date("%d/%m/%Y")
+local time = os.date("%H:%M:%S")
 
-    local avatar = "https://api.newstargeted.com/roblox/users/v1/avatar-headshot?userid="
-    .. userId
-    .. "&size=720x720&format=Png&isCircular=false"
-
-    local date = os.date("%d/%m/%Y")
-    local time = os.date("%H:%M:%S")
-
-    local data = {
-    embeds = {{
-        title = "Vxnity Hub | Execution Log",
-        color = 000000,
-
-        thumbnail = {
-            url = avatar
-        },
-
-        fields = {
-            { name = "User", value = username, inline = true },
-            { name = "UserId", value = tostring(userId), inline = true },
-            { name = "Executor", value = executor, inline = false },
-            { name = "Device", value = device, inline = true },
-            { name = "Game", value = gameName, inline = false },
-            { name = "PlaceId", value = tostring(placeId), inline = true },
-            { name = "Fecha", value = date, inline = true },
-            { name = "Hora", value = time, inline = true }
-        }
-    }}
+local payload = {
+	embeds = {
+		{
+			title = "Vxnity Hub | Execution Log",
+			color = 0,
+			thumbnail = {
+				url = avatar
+			},
+			fields = {
+				{ name = "User", value = username, inline = true },
+				{ name = "UserId", value = tostring(userId), inline = true },
+				{ name = "Executor", value = executor, inline = true },
+				{ name = "Device", value = device, inline = true },
+				{ name = "Game", value = gameName, inline = false },
+				{ name = "PlaceId", value = tostring(placeId), inline = true },
+				{ name = "Fecha", value = date, inline = true },
+				{ name = "Hora", value = time, inline = true }
+			},
+			footer = {
+				text = "reposorio: vxnityhub.lua"
+			}
+		}
 	}
+}
 
-    local req = http_request or request or syn.request
-    req({
-        Url = WebhookURL,
-        Method = "POST",
-        Headers = {
-            ["Content-Type"] = "application/json"
-        },
-        Body = HttpService:JSONEncode(data)
-    })
+local req = http_request or request or syn.request
+if req then
+	req({
+		Url = WebhookURL,
+		Method = "POST",
+		Headers = {
+			["Content-Type"] = "application/json"
+		},
+		Body = HttpService:JSONEncode(payload)
+	})
 end
 
-task.spawn(sendExecutionLog)
+
 
 task.wait(1)
 
