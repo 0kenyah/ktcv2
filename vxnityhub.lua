@@ -2,46 +2,40 @@ local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
-local country = "Unknown"
 
-pcall(function()
-    local res = HttpService:GetAsync("https://users.roblox.com/v1/users/" .. userId)
-    local data = HttpService:JSONDecode(res)
-    if data and data.countryCode then
-        country = data.countryCode
-    end
-end)
 local LocalPlayer = Players.LocalPlayer
 local WebhookURL = "https://discord.com/api/webhooks/1464923263443402886/AMqNuy3ujxdQalbS9-bf6aRpanpJqMoWIFKtpM1JOPWCMspDsb_135CPca1UsLg0bYlg"
 
 local device = (UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled) and "Mobile" or "PC"
 local executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
-
 local username = (LocalPlayer and LocalPlayer.Name) or "Unknown Player"
 local userId = (LocalPlayer and LocalPlayer.UserId) or 0
 local placeId = game.PlaceId
-
 local gameName = "Unknown Game"
 pcall(function()
 	gameName = MarketplaceService:GetProductInfo(placeId).Name
 end)
 
-local avatar =
-	"https://api.newstargeted.com/roblox/users/v1/avatar-headshot?userid="
-	.. userId ..
-	"&size=720x720&format=Png&isCircular=false"
+local avatar = "https://api.newstargeted.com/roblox/users/v1/avatar-headshot?userid=" .. userId .. "&size=720x720&format=Png&isCircular=false"
 
 local date = os.date("%d/%m/%Y")
 local time = os.date("%H:%M:%S")
+
+local country = "Unknown"
+pcall(function()
+	local res = HttpService:GetAsync("https://users.roblox.com/v1/users/" .. userId)
+	local data = HttpService:JSONDecode(res)
+	if data and data.countryCode then
+		country = data.countryCode
+	end
+end)
 
 local payload = {
 	embeds = {
 		{
 			title = "Vxnity Hub | Execution Log",
 			color = 0,
-			thumbnail = {
-				url = avatar
-			},
+			thumbnail = { url = avatar },
 			fields = {
 				{ name = "User", value = username, inline = true },
 				{ name = "UserId", value = tostring(userId), inline = true },
@@ -50,11 +44,10 @@ local payload = {
 				{ name = "Game", value = gameName, inline = false },
 				{ name = "PlaceId", value = tostring(placeId), inline = true },
 				{ name = "Fecha", value = date, inline = true },
-				{ name = "Hora", value = time, inline = true }
+				{ name = "Hora", value = time, inline = true },
+				{ name = "Country", value = country, inline = true }
 			},
-			footer = {
-				text = "reposorio: vxnityhub.lua"
-			}
+			footer = { text = "reposorio: vxnityhub.lua" }
 		}
 	}
 }
@@ -64,13 +57,10 @@ if req then
 	req({
 		Url = WebhookURL,
 		Method = "POST",
-		Headers = {
-			["Content-Type"] = "application/json"
-		},
+		Headers = { ["Content-Type"] = "application/json" },
 		Body = HttpService:JSONEncode(payload)
 	})
 end
-
 
 
 task.wait(1)
