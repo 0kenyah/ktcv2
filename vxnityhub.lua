@@ -35,33 +35,34 @@ local function sendExecutionLog()
         gameName = MarketplaceService:GetProductInfo(placeId).Name
     end)
 
-    local avatar = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=420&height=420&format=png"
+    local avatar = "https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds="
+	.. userId ..
+	"&size=420x420&format=Png&isCircular=false"
 
     local date = os.date("%d/%m/%Y")
     local time = os.date("%H:%M:%S")
 
     local data = {
-        embeds = {{
-            title = "Vxnity Hub | Execution Log",
-            color = 000000,
-            thumbnail = {
-                url = avatar
-            },
-            fields = {
-                { name = "User", value = username, inline = true },
-                { name = "UserId", value = tostring(userId), inline = true },
-                { name = "Executor", value = executor, inline = false },
-                { name = "Device", value = device, inline = true },
-                { name = "Game", value = gameName, inline = false },
-                { name = "PlaceId", value = tostring(placeId), inline = true },
-                { name = "Fecha", value = date, inline = true },
-                { name = "Hora", value = time, inline = true }
-            },
-            footer = {
-                text = "vxnityhub.lua"
-            }
-        }}
-    }
+    embeds = {{
+        title = "Vxnity Hub | Execution Log",
+        color = 000000,
+
+        thumbnail = {
+            url = avatar
+        },
+
+        fields = {
+            { name = "User", value = username, inline = true },
+            { name = "UserId", value = tostring(userId), inline = true },
+            { name = "Executor", value = executor, inline = false },
+            { name = "Device", value = device, inline = true },
+            { name = "Game", value = gameName, inline = false },
+            { name = "PlaceId", value = tostring(placeId), inline = true },
+            { name = "Fecha", value = date, inline = true },
+            { name = "Hora", value = time, inline = true }
+        }
+    }}
+	}
 
     local req = http_request or request or syn.request
     req({
