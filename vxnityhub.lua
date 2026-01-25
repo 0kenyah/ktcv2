@@ -1705,7 +1705,7 @@ addToggle(
 
                     local targetPos =
                         hrp.Position
-                        + hrp.CFrame.LookVector * 0.25
+                        + hrp.CFrame.LookVector * 2.10
                         - hrp.CFrame.LookVector * forward
                         - Vector3.new(0, down, 0)
 
@@ -1912,18 +1912,18 @@ do
 	"0_Kenyah  OP",
 	function(value)
 		if value then
-			AutoReactRange = 5
-			ReactVelocity = 2500
+			AutoReactRange = 7
+			ReactVelocity = 25000
 			ReactTickRate = 0
 			FrontReact = true
-			FrontOffset = 4.0
+			FrontOffset = 8.0
 			InstantTouchCount = true
 			SkillBoost = true
-			SkillSpeed = 4
+			SkillSpeed = 9
 			notify("Reacts", "Kenyah React  OP Loaded")
 		else
-			AutoReactRange = 4.4
-			ReactVelocity = 900
+			AutoReactRange = 6.4
+			ReactVelocity = 25000
 			ReactTickRate = 0.01
 			FrontReact = false
 			FrontOffset = 0
