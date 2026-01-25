@@ -911,8 +911,8 @@ addToggle(
         end
     end
 )
-local MiscSection = createSection(TabMisc, "Perspective")
 
+	
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
@@ -1705,7 +1705,7 @@ addToggle(
 
                     local targetPos =
                         hrp.Position
-                        + hrp.CFrame.LookVector * 2.10
+                        + hrp.CFrame.LookVector * 4.10
                         - hrp.CFrame.LookVector * forward
                         - Vector3.new(0, down, 0)
 
