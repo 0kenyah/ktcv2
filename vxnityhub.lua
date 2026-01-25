@@ -1047,6 +1047,22 @@ addToggle(
     end
 )
 
+local MiscSection = createSection(TabMisc, "Misc")
+
+addButton(
+    MiscSection,
+    "BloxstrapMobile",
+    "Do not use very heavy or broken flags, it may cause a crash .",
+    function()
+        getgenv().autosetup = {
+            path = 'Bloxstrap',
+            setup = true
+        }
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/qwertyui-is-back/Bloxstrap/main/Initiate.lua', true), 'lol')()
+    end
+)
+
+
 local TabGamepass = createTab("Gamepass", "badge-dollar-sign")
 
 local TabSettings = createTab("Settings", "settings")
