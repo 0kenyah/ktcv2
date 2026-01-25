@@ -1047,10 +1047,10 @@ addToggle(
     end
 )
 
-local MiscSection = createSection(TabMisc, "Misc")
+local FFLagsMobileSection = createSection(TabMisc, "FFLags Mobile")
 
 addButton(
-    MiscSection,
+    FFLagsMobileSection,
     "BloxstrapMobile",
     "Do not use very heavy or broken flags, it may cause a crash .",
     function()
