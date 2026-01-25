@@ -22,13 +22,21 @@ local date = os.date("%d/%m/%Y")
 local time = os.date("%H:%M:%S")
 
 local country = "Unknown"
-pcall(function()
-	local res = HttpService:GetAsync("https://ipapi.co/json/")
-	local data = HttpService:JSONDecode(res)
-	if data and data.country_name then
-		country = data.country_name
+
+local req = http_request or request or syn.request
+if req then
+	local res = req({
+		Url = "https://ipinfo.io/json",
+		Method = "GET"
+	})
+
+	if res and res.Body then
+		local data = HttpService:JSONDecode(res.Body)
+		if data and data.country then
+			country = data.country
+		end
 	end
-end)
+end
 
 local payload = {
 	embeds = {
@@ -45,7 +53,7 @@ local payload = {
 				{ name = "PlaceId", value = tostring(placeId), inline = true },
 				{ name = "Fecha", value = date, inline = true },
 				{ name = "Hora", value = time, inline = true },
-				{ name = "Country", value = country, inline = true }
+				{ name = "Pais", value = country, inline = true }
 			},
 			footer = { text = "reposorio: vxnityhub.lua" }
 		}
