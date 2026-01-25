@@ -23,10 +23,10 @@ local time = os.date("%H:%M:%S")
 
 local country = "Unknown"
 pcall(function()
-	local res = HttpService:GetAsync("https://users.roblox.com/v1/users/" .. userId)
+	local res = HttpService:GetAsync("https://ipapi.co/json/")
 	local data = HttpService:JSONDecode(res)
-	if data and data.countryCode then
-		country = data.countryCode
+	if data and data.country_name then
+		country = data.country_name
 	end
 end)
 
