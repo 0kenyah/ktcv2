@@ -78,6 +78,8 @@ local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
+local selectedScript
+
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
 LoadingGui.IgnoreGuiInset = true
@@ -164,7 +166,6 @@ end)
 
 local displayed = 0
 local target = 1
-
 RunService.RenderStepped:Connect(function(dt)
     displayed += (target-displayed)*math.clamp(dt*1.2,0,1)
     LoadingBarFill.Size = UDim2.fromScale(displayed,1)
@@ -172,9 +173,9 @@ end)
 
 local StatusTexts = {
     "Starting...",
-    "Loading Bypass...",
+    "Download Bypass...",
     "Applying Settings...",
-     " Viewing New Updates ...",
+    "Updating Script ...",
     "Almost Done..."
 }
 
@@ -192,8 +193,16 @@ task.delay(4,function()
     task.wait(0.6)
     LoadingGui:Destroy()
 
-    if VxnityHubUI then
-        VxnityHubUI:Open()
+    repeat task.wait(0.1) until selectedScript
+
+    if selectedScript then
+        
+        
+        local WindUI = require(game:GetService("ReplicatedStorage"):WaitForChild("WindUI"))
+        local window = WindUI:CreateWindow("VxnityHub Premium",Enum.KeyCode.RightControl)
+        window:CreateTab("Main")
+        window:CreateTab("Misc")
+        window:CreateTab("Settings")
     end
 
     local NotifyGui = Instance.new("ScreenGui")
@@ -202,7 +211,7 @@ task.delay(4,function()
 
     local Notify = Instance.new("TextLabel")
     Notify.Size = UDim2.fromOffset(450,50)
-    Notify.Position = UDim2.fromScale(0.5,0)
+    Notify.Position = UDim2.fromScale(0.5,-0.1)
     Notify.AnchorPoint = Vector2.new(0.5,0)
     Notify.BackgroundColor3 = Color3.fromRGB(25,25,25)
     Notify.TextColor3 = Color3.fromRGB(255,255,255)
@@ -211,14 +220,14 @@ task.delay(4,function()
     Notify.Text = "If you're enjoying the script, invite your friends to the Discord server!"
     Notify.Parent = NotifyGui
     Notify.BackgroundTransparency = 1
-    Notify.Position = UDim2.fromScale(0.5,-0.1)
-    
+
     TweenService:Create(Notify,TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{Position=UDim2.fromScale(0.5,0.1),BackgroundTransparency=0.3}):Play()
     task.wait(5)
     TweenService:Create(Notify,TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{Position=UDim2.fromScale(0.5,-0.1),BackgroundTransparency=1}):Play()
     task.wait(0.5)
     NotifyGui:Destroy()
 end)
+
 
 local StarterGui = game:GetService("StarterGui")
 local Workspace = game:GetService("Workspace")
