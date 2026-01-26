@@ -75,223 +75,117 @@ task.wait(1)
 
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
 LoadingGui.IgnoreGuiInset = true
 LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-local success, parent = pcall(function()
-	return gethui and gethui() or game:GetService("CoreGui")
-end)
-if not success or not parent then
-	parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
-end
+local success, parent = pcall(function() return gethui and gethui() or game:GetService("CoreGui") end)
+if not success or not parent then parent = Players.LocalPlayer:WaitForChild("PlayerGui") end
 LoadingGui.Parent = parent
 
 local Background = Instance.new("Frame")
-Background.Name = "Background"
-Background.Size = UDim2.fromScale(1, 1)
-Background.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-Background.BorderSizePixel = 0
+Background.Size = UDim2.fromScale(1,1)
+Background.BackgroundColor3 = Color3.fromRGB(15,0,0)
 Background.Parent = LoadingGui
 
 local UIGradient = Instance.new("UIGradient")
-UIGradient.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(10, 10, 20)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 5, 10))
-})
-UIGradient.Rotation = 45
+UIGradient.Color = ColorSequence.new(Color3.fromRGB(50,0,0), Color3.fromRGB(15,0,0))
+UIGradient.Rotation = 90
 UIGradient.Parent = Background
 
-local MainContainer = Instance.new("Frame")
-MainContainer.Name = "MainContainer"
-MainContainer.Size = UDim2.fromOffset(400, 300)
-MainContainer.AnchorPoint = Vector2.new(0.5, 0.5)
-MainContainer.Position = UDim2.fromScale(0.5, 0.5)
-MainContainer.BackgroundTransparency = 1
-MainContainer.Parent = Background
-
-local Title = Instance.new("TextLabel")
-Title.Name = "Title"
-Title.Size = UDim2.new(1, 0, 0, 50)
-Title.Position = UDim2.fromScale(0, 0.3)
-Title.BackgroundTransparency = 1
-Title.Text = ""
-Title.TextTransparency = 1
-Title.Parent = MainContainer
-
-local SubTitle = Instance.new("TextLabel")
-SubTitle.Name = "SubTitle"
-SubTitle.Size = UDim2.new(1, 0, 0, 20)
-SubTitle.Position = UDim2.fromScale(0, 0.45)
-SubTitle.BackgroundTransparency = 1
-SubTitle.Text = ""
-SubTitle.TextTransparency = 1
-SubTitle.Parent = MainContainer
-
-local Glow = Instance.new("ImageLabel")
-Glow.Name = "Glow"
-Glow.Size = UDim2.fromOffset(260, 120)
-Glow.AnchorPoint = Vector2.new(0.5, 0.5)
-Glow.Position = UDim2.fromScale(0.5, 0.38)
-Glow.BackgroundTransparency = 1
-Glow.Image = "rbxassetid://5028857084"
-Glow.ImageTransparency = 0.35
-Glow.ScaleType = Enum.ScaleType.Fit
-Glow.ZIndex = 1
-Glow.Parent = MainContainer
+local Main = Instance.new("Frame")
+Main.Size = UDim2.fromOffset(420, 320)
+Main.Position = UDim2.fromScale(0.5,0.5)
+Main.AnchorPoint = Vector2.new(0.5,0.5)
+Main.BackgroundTransparency = 1
+Main.Parent = Background
 
 local Logo = Instance.new("ImageLabel")
-Logo.Name = "Logo"
-Logo.Size = Glow.Size
-Logo.AnchorPoint = Vector2.new(0.5, 0.5)
-Logo.Position = Glow.Position
+Logo.Size = UDim2.fromOffset(250,150)
+Logo.Position = UDim2.fromScale(0.5,0.33)
+Logo.AnchorPoint = Vector2.new(0.5,0.5)
 Logo.BackgroundTransparency = 1
-Logo.Image = "rbxassetid://97314042970903"
+Logo.Image = "rbxassetid://119784598022281"
 Logo.ScaleType = Enum.ScaleType.Fit
-Logo.ZIndex = 2
-Logo.Parent = MainContainer
+Logo.Parent = Main
+
+local Glow = Instance.new("ImageLabel")
+Glow.Size = Logo.Size
+Glow.Position = Logo.Position
+Glow.AnchorPoint = Vector2.new(0.5,0.5)
+Glow.BackgroundTransparency = 1
+Glow.Image = "rbxassetid://5028857084"
+Glow.ImageColor3 = Color3.fromRGB(255,50,50)
+Glow.Parent = Main
 
 local LoadingBarBG = Instance.new("Frame")
-LoadingBarBG.Name = "LoadingBarBG"
-LoadingBarBG.Size = UDim2.new(0.8, 0, 0, 6)
-LoadingBarBG.Position = UDim2.fromScale(0.1, 0.68)
-LoadingBarBG.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-LoadingBarBG.BorderSizePixel = 0
-LoadingBarBG.Parent = MainContainer
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(1, 0)
-UICorner.Parent = LoadingBarBG
+LoadingBarBG.Size = UDim2.new(0.8,0,0,8)
+LoadingBarBG.Position = UDim2.fromScale(0.1,0.7)
+LoadingBarBG.BackgroundColor3 = Color3.fromRGB(90,0,0)
+LoadingBarBG.Parent = Main
 
 local LoadingBarFill = Instance.new("Frame")
-LoadingBarFill.Name = "LoadingBarFill"
-LoadingBarFill.Size = UDim2.fromScale(0, 1)
-LoadingBarFill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-LoadingBarFill.BorderSizePixel = 0
+LoadingBarFill.Size = UDim2.fromScale(0,1)
+LoadingBarFill.BackgroundColor3 = Color3.fromRGB(255,40,40)
 LoadingBarFill.Parent = LoadingBarBG
 
-local UICornerFill = Instance.new("UICorner")
-UICornerFill.CornerRadius = UDim.new(1, 0)
-UICornerFill.Parent = LoadingBarFill
-
 local Status = Instance.new("TextLabel")
-Status.Name = "Status"
-Status.Size = UDim2.new(1, 0, 0, 30)
-Status.Position = UDim2.fromScale(0, 0.76)
+Status.Size = UDim2.new(1,0,0,30)
+Status.Position = UDim2.fromScale(0,0.78)
 Status.BackgroundTransparency = 1
-Status.Text = "Iniciando..."
-Status.TextColor3 = Color3.fromRGB(150, 150, 160)
-Status.TextSize = 14
-Status.Font = Enum.Font.GothamMedium
-Status.Parent = MainContainer
+Status.Text = "Cargando.."
+Status.TextColor3 = Color3.fromRGB(255,100,100)
+Status.Font = Enum.Font.GothamBold
+Status.TextSize = 16
+Status.Parent = Main
 
+TweenService:Create(Glow, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {ImageTransparency = 0.4, ImageColor3 = Color3.fromRGB(255,20,20)}):Play()
 
-TweenService:Create(
-	Glow,
-	TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-	{ImageTransparency = 0.55}
-):Play()
-
--- multicolor glow
-task.spawn(function()
-	local colors = {
-		Color3.fromRGB(0,170,255),
-		Color3.fromRGB(180,0,255),
-		Color3.fromRGB(255,80,80),
-		Color3.fromRGB(0,255,170),
-	}
-	local i = 1
-	while Glow.Parent do
-		TweenService:Create(
-			Glow,
-			TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{ImageColor3 = colors[i]}
-		):Play()
-		i = i % #colors + 1
-		task.wait(2)
-	end
-end)
-
-
-local ParticlesFolder = Instance.new("Folder")
-ParticlesFolder.Name = "Particles"
-ParticlesFolder.Parent = Background
-
-local particleConnections = {}
-
-local function spawnParticle()
-	local p = Instance.new("Frame")
-	local size = math.random(2,5)
-	p.Size = UDim2.fromOffset(size, size)
-	p.Position = UDim2.fromScale(math.random(), math.random())
-	p.BackgroundColor3 = Color3.fromRGB(255,255,255)
-	p.BackgroundTransparency = math.random(30,60)/100
-	p.BorderSizePixel = 0
-	p.ZIndex = 0
-	p.Parent = ParticlesFolder
-
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(1,0)
-	corner.Parent = p
-
-	local drift = Vector2.new(
-		math.random(-10,10)/1000,
-		math.random(-10,10)/1000
-	)
-
-	local conn
-	conn = RunService.RenderStepped:Connect(function()
-		if not p.Parent then conn:Disconnect() return end
-		p.Position += UDim2.fromScale(drift.X, drift.Y)
-	end)
-
-	table.insert(particleConnections, conn)
-	return p
+local circleParticles = {}
+for i=1,60 do
+    local p = Instance.new("Frame")
+    p.Size = UDim2.fromOffset(4,4)
+    p.Position = UDim2.fromScale(0.5,0.5)
+    p.BackgroundColor3 = Color3.fromRGB(255,150,150)
+    p.BorderSizePixel = 0
+    p.AnchorPoint = Vector2.new(0.5,0.5)
+    p.Parent = Background
+    table.insert(circleParticles, p)
 end
 
-for i = 1, 70 do
-	spawnParticle()
-end
-
-local displayedProgress = 0
-local targetProgress = 0
-
+local angle = 0
 RunService.RenderStepped:Connect(function(dt)
-	displayedProgress += (targetProgress - displayedProgress) * math.clamp(dt * 6, 0, 1)
-	LoadingBarFill.Size = UDim2.fromScale(displayedProgress, 1)
+    angle += dt * 60
+    for index, part in ipairs(circleParticles) do
+        local rad = (index / #circleParticles) * math.pi * 2
+        local x = math.cos(rad + math.rad(angle)) * 300
+        local y = math.sin(rad + math.rad(angle)) * 200
+        part.Position = UDim2.fromOffset(Background.AbsoluteSize.X/2 + x, Background.AbsoluteSize.Y/2 + y)
+    end
 end)
 
-local function updateProgress(progress, text)
-	targetProgress = math.clamp(progress, 0, 1)
-	Status.Text = string.upper(text)
-	task.wait(math.random(0.1, 0.3))
+local displayed = 0
+local target = 0
+RunService.RenderStepped:Connect(function(dt)
+    displayed += (target - displayed) * math.clamp(dt*5,0,1)
+    LoadingBarFill.Size = UDim2.fromScale(displayed,1)
+end)
+
+function updateProgress(p,text)
+    target = math.clamp(p,0,1)
+    Status.Text = text
+    task.wait(0.2)
 end
 
-local function closeLoadingScreen()
-	local tweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-	local fadeOut = TweenService:Create(Background, tweenInfo, {BackgroundTransparency = 1})
-
-	TweenService:Create(Title, tweenInfo, {TextTransparency = 1}):Play()
-	TweenService:Create(SubTitle, tweenInfo, {TextTransparency = 1}):Play()
-	TweenService:Create(Status, tweenInfo, {TextTransparency = 1}):Play()
-	TweenService:Create(LoadingBarBG, tweenInfo, {BackgroundTransparency = 1}):Play()
-	TweenService:Create(LoadingBarFill, tweenInfo, {BackgroundTransparency = 1}):Play()
-	TweenService:Create(Logo, tweenInfo, {ImageTransparency = 1}):Play()
-	TweenService:Create(Glow, tweenInfo, {ImageTransparency = 1}):Play()
-
-	for _,v in ipairs(ParticlesFolder:GetChildren()) do
-		TweenService:Create(v, tweenInfo, {BackgroundTransparency = 1}):Play()
-	end
-
-	fadeOut:Play()
-	fadeOut.Completed:Connect(function()
-		for _,c in ipairs(particleConnections) do
-			pcall(function() c:Disconnect() end)
-		end
-		LoadingGui:Destroy()
-	end)
+function finishLoading()
+    local t = TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
+    TweenService:Create(Background, t, {BackgroundTransparency=1}):Play()
+    TweenService:Create(Main, t, {BackgroundTransparency=1}):Play()
+    task.wait(0.6)
+    LoadingGui:Destroy()
 end
+
 
 local StarterGui = game:GetService("StarterGui")
 local Workspace = game:GetService("Workspace")
