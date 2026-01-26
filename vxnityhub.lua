@@ -75,22 +75,10 @@ task.wait(1)
 
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
-local RainFolder = Instance.new("Folder")
-RainFolder.Name = "RedRain"
-RainFolder.Parent = Background
 
-local RainActive = true
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
-LoadingGui.IgnoreGuiInset = true
-LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-local success, parent = pcall(function()
-	return gethui and gethui() or game:GetService("CoreGui")
-end)
-if not success or not parent then
-	parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
-end
+...
 LoadingGui.Parent = parent
 
 local Background = Instance.new("Frame")
@@ -99,13 +87,36 @@ Background.Size = UDim2.fromScale(1, 1)
 Background.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
 Background.BorderSizePixel = 0
 Background.Parent = LoadingGui
+
+
 local RainFolder = Instance.new("Folder")
 RainFolder.Name = "RedRain"
 RainFolder.Parent = Background
 
 local RainActive = true
-return p
+
+local success, parent = pcall(function()
+	return gethui and gethui() or game:GetService("CoreGui")
+end)
+if not success or not parent then
+	parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 end
+
+LoadingGui.Parent = parent
+local Background = Instance.new("Frame")
+Background.Name = "Background"
+Background.Size = UDim2.fromScale(1, 1)
+Background.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
+Background.BorderSizePixel = 0
+Background.Parent = LoadingGui
+
+
+local RainFolder = Instance.new("Folder")
+RainFolder.Name = "RedRain"
+RainFolder.Parent = Background
+
+local RainActive = true
+
 local function createRedRainDrop()
     local drop = Instance.new("Frame")
     drop.Size = UDim2.fromOffset(2, math.random(14,28))
@@ -379,6 +390,7 @@ end
 
 task.wait(1)
 
+local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 
@@ -387,7 +399,7 @@ LoadingGui.Name = "WindUILoading"
 LoadingGui.IgnoreGuiInset = true
 LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 local success, parent = pcall(function() return gethui and gethui() or game:GetService("CoreGui") end)
-if not success or not parent then parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui") end
+if not success or not parent then parent = Players.LocalPlayer:WaitForChild("PlayerGui") end
 LoadingGui.Parent = parent
 
 local Background = Instance.new("Frame")
@@ -396,7 +408,6 @@ Background.Size = UDim2.fromScale(1, 1)
 Background.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
 Background.BorderSizePixel = 0
 Background.Parent = LoadingGui
-
 
 local RainFolder = Instance.new("Folder")
 RainFolder.Name = "RedRain"
@@ -435,7 +446,6 @@ task.spawn(function()
     end
 end)
 
-
 local UIGradient = Instance.new("UIGradient")
 UIGradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(10, 10, 20)),
@@ -443,8 +453,6 @@ UIGradient.Color = ColorSequence.new({
 })
 UIGradient.Rotation = 45
 UIGradient.Parent = Background
-
-
 
 local MainContainer = Instance.new("Frame")
 MainContainer.Name = "MainContainer"
@@ -454,8 +462,6 @@ MainContainer.Position = UDim2.fromScale(0.5, 0.5)
 MainContainer.BackgroundTransparency = 1
 MainContainer.Parent = Background
 
-
-
 local function closeLoadingScreen()
     local tweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     local fadeOut = TweenService:Create(Background, tweenInfo, { BackgroundTransparency = 1 })
@@ -464,10 +470,14 @@ local function closeLoadingScreen()
     fadeOut.Completed:Connect(function()
         RainActive = false
         RainFolder:Destroy()
-
         LoadingGui:Destroy()
     end)
 end
+
+task.delay(3, function()
+    closeLoadingScreen()
+end)
+
 
 
 
