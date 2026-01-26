@@ -73,18 +73,16 @@ end
 
 task.wait(1)
 
+local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
+local PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
 LoadingGui.IgnoreGuiInset = true
 LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-local parent
-pcall(function() parent = gethui() end)
-if not parent then parent = Players.LocalPlayer:WaitForChild("PlayerGui") end
-LoadingGui.Parent = parent
+LoadingGui.Parent = PlayerGui
 
 local Background = Instance.new("Frame")
 Background.Size = UDim2.fromScale(1,1)
@@ -97,7 +95,7 @@ UIGradient.Rotation = 90
 UIGradient.Parent = Background
 
 local Main = Instance.new("Frame")
-Main.Size = UDim2.fromOffset(420, 320)
+Main.Size = UDim2.fromOffset(420,320)
 Main.Position = UDim2.fromScale(0.5,0.5)
 Main.AnchorPoint = Vector2.new(0.5,0.5)
 Main.BackgroundTransparency = 1
@@ -117,8 +115,7 @@ Stroke.Thickness = 4
 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 Stroke.Color = Color3.fromRGB(255,50,50)
 Stroke.Parent = Logo
-
-TweenService:Create(Stroke, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {Color=Color3.fromRGB(255,20,20)}):Play()
+TweenService:Create(Stroke, TweenInfo.new(1.8,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{Color=Color3.fromRGB(255,20,20)}):Play()
 
 local LoadingBarBG = Instance.new("Frame")
 LoadingBarBG.Size = UDim2.new(0.8,0,0,8)
@@ -135,7 +132,7 @@ local Status = Instance.new("TextLabel")
 Status.Size = UDim2.new(1,0,0,30)
 Status.Position = UDim2.fromScale(0,0.78)
 Status.BackgroundTransparency = 1
-Status.Text = "Cargando.."
+Status.Text = "Starting..."
 Status.TextColor3 = Color3.fromRGB(255,100,100)
 Status.Font = Enum.Font.GothamBold
 Status.TextSize = 16
@@ -150,41 +147,78 @@ for i=1,60 do
     p.BorderSizePixel = 0
     p.AnchorPoint = Vector2.new(0.5,0.5)
     p.Parent = Background
-    table.insert(circleParticles, p)
+    table.insert(circleParticles,p)
 end
 
 local angle = 0
 RunService.RenderStepped:Connect(function(dt)
-    angle += dt * 60
-    for index, part in ipairs(circleParticles) do
-        local rad = (index / #circleParticles) * math.pi * 2
-        local x = math.cos(rad + math.rad(angle)) * 300
-        local y = math.sin(rad + math.rad(angle)) * 200
-        part.Position = UDim2.fromOffset(Background.AbsoluteSize.X/2 + x, Background.AbsoluteSize.Y/2 + y)
+    angle += dt*60
+    for index,part in ipairs(circleParticles) do
+        local rad = (index/#circleParticles)*math.pi*2
+        local x = math.cos(rad+math.rad(angle))*300
+        local y = math.sin(rad+math.rad(angle))*200
+        part.Position = UDim2.fromOffset(Background.AbsoluteSize.X/2+x,Background.AbsoluteSize.Y/2+y)
+        part.BackgroundColor3 = Color3.fromHSV((tick()*0.3+index/#circleParticles)%1,0.8,1)
     end
 end)
 
 local displayed = 0
-local target = 0
+local target = 1
+
 RunService.RenderStepped:Connect(function(dt)
-    displayed += (target - displayed) * math.clamp(dt*5,0,1)
+    displayed += (target-displayed)*math.clamp(dt*1.2,0,1)
     LoadingBarFill.Size = UDim2.fromScale(displayed,1)
 end)
 
-function updateProgress(p,text)
-    target = math.clamp(p,0,1)
-    Status.Text = text
-    task.wait(0.2)
-end
+local StatusTexts = {
+    "Starting...",
+    "Loading Bypass...",
+    "Applying Settings...",
+     " Viewing New Updates ...",
+    "Almost Done..."
+}
 
-function finishLoading()
+task.spawn(function()
+    for i,text in ipairs(StatusTexts) do
+        Status.Text = text
+        task.wait(0.8)
+    end
+end)
+
+task.delay(4,function()
     local t = TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
-    TweenService:Create(Background, t, {BackgroundTransparency=1}):Play()
-    TweenService:Create(Main, t, {BackgroundTransparency=1}):Play()
+    TweenService:Create(Background,t,{BackgroundTransparency=1}):Play()
+    TweenService:Create(Main,t,{BackgroundTransparency=1}):Play()
     task.wait(0.6)
     LoadingGui:Destroy()
-end
 
+    if VxnityHubUI then
+        VxnityHubUI:Open()
+    end
+
+    local NotifyGui = Instance.new("ScreenGui")
+    NotifyGui.Name = "VxnityHubNotify"
+    NotifyGui.Parent = PlayerGui
+
+    local Notify = Instance.new("TextLabel")
+    Notify.Size = UDim2.fromOffset(450,50)
+    Notify.Position = UDim2.fromScale(0.5,0)
+    Notify.AnchorPoint = Vector2.new(0.5,0)
+    Notify.BackgroundColor3 = Color3.fromRGB(25,25,25)
+    Notify.TextColor3 = Color3.fromRGB(255,255,255)
+    Notify.Font = Enum.Font.GothamBold
+    Notify.TextSize = 16
+    Notify.Text = "If you're enjoying the script, invite your friends to the Discord server!"
+    Notify.Parent = NotifyGui
+    Notify.BackgroundTransparency = 1
+    Notify.Position = UDim2.fromScale(0.5,-0.1)
+    
+    TweenService:Create(Notify,TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{Position=UDim2.fromScale(0.5,0.1),BackgroundTransparency=0.3}):Play()
+    task.wait(5)
+    TweenService:Create(Notify,TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{Position=UDim2.fromScale(0.5,-0.1),BackgroundTransparency=1}):Play()
+    task.wait(0.5)
+    NotifyGui:Destroy()
+end)
 
 local StarterGui = game:GetService("StarterGui")
 local Workspace = game:GetService("Workspace")
