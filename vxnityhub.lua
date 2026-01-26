@@ -2,87 +2,83 @@ local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
-
 local LocalPlayer = Players.LocalPlayer
-local WebhookURL = "https://discord.com/api/webhooks/1464923263443402886/AMqNuy3ujxdQalbS9-bf6aRpanpJqMoWIFKtpM1JOPWCMspDsb_135CPca1UsLg0bYlg"
 
+local WebhookURL = "https://discord.com/api/webhooks/1464923263443402886/AMqNuy3ujxdQalbS9-bf6aRpanpJqMoWIFKtpM1JOPWCMspDsb_135CPca1UsLg0bYlg"
 local device = (UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled) and "Mobile" or "PC"
 local executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
 local username = (LocalPlayer and LocalPlayer.Name) or "Unknown Player"
 local userId = (LocalPlayer and LocalPlayer.UserId) or 0
 local placeId = game.PlaceId
 local gameName = "Unknown Game"
-pcall(function()
-	gameName = MarketplaceService:GetProductInfo(placeId).Name
-end)
+
+pcall(function() gameName = MarketplaceService:GetProductInfo(placeId).Name end)
 
 local avatar = "https://api.newstargeted.com/roblox/users/v1/avatar-headshot?userid=" .. userId .. "&size=720x720&format=Png&isCircular=false"
-
 local date = os.date("%d/%m/%Y")
 local time = os.date("%H:%M:%S")
-
 local country = "Unknown"
 
 local req = http_request or request or syn.request
 if req then
-	local res = req({
-		Url = "https://ipinfo.io/json",
-		Method = "GET"
-	})
-
-	if res and res.Body then
-		local data = HttpService:JSONDecode(res.Body)
-		if data and data.country then
-			country = data.country
-		end
-	end
+    local res = req({ Url = "https://ipinfo.io/json", Method = "GET" })
+    if res and res.Body then
+        local data = HttpService:JSONDecode(res.Body)
+        if data and data.country then
+            country = data.country
+        end
+    end
 end
 
 local payload = {
-	embeds = {
-		{
-			title = "Vxnity Hub | Execution Log",
-			color = 0,
-			thumbnail = { url = avatar },
-			fields = {
-				{ name = "User", value = username, inline = true },
-				{ name = "UserId", value = tostring(userId), inline = true },
-				{ name = "Executor", value = executor, inline = true },
-				{ name = "Device", value = device, inline = true },
-				{ name = "Game", value = gameName, inline = false },
-				{ name = "PlaceId", value = tostring(placeId), inline = true },
-				{ name = "Fecha", value = date, inline = true },
-				{ name = "Hora", value = time, inline = true },
-				{ name = "Pais", value = country, inline = true }
-			},
-			footer = { text = "reposorio: vxnityhub.lua" }
-		}
-	}
+    embeds = {
+        {
+            title = "Vxnity Hub | Execution Log",
+            color = 0,
+            thumbnail = { url = avatar },
+            fields = {
+                { name = "User", value = username, inline = true },
+                { name = "UserId", value = tostring(userId), inline = true },
+                { name = "Executor", value = executor, inline = true },
+                { name = "Device", value = device, inline = true },
+                { name = "Game", value = gameName, inline = false },
+                { name = "PlaceId", value = tostring(placeId), inline = true },
+                { name = "Fecha", value = date, inline = true },
+                { name = "Hora", value = time, inline = true },
+                { name = "Pais", value = country, inline = true },
+            },
+            footer = { text = "repositorio: vxnityhub.lua" },
+        },
+    },
 }
 
-local req = http_request or request or syn.request
 if req then
-	req({
-		Url = WebhookURL,
-		Method = "POST",
-		Headers = { ["Content-Type"] = "application/json" },
-		Body = HttpService:JSONEncode(payload)
-	})
+    req({
+        Url = WebhookURL,
+        Method = "POST",
+        Headers = { ["Content-Type"] = "application/json" },
+        Body = HttpService:JSONEncode(payload),
+    })
 end
-
 
 task.wait(1)
 
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
 
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
 LoadingGui.IgnoreGuiInset = true
 LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-local success, parent = pcall(function() return gethui and gethui() or game:GetService("CoreGui") end)
-if not success or not parent then parent = Players.LocalPlayer:WaitForChild("PlayerGui") end
+
+local success, parent = pcall(function()
+    return gethui and gethui() or game:GetService("CoreGui")
+end)
+
+if not success or not parent then
+    parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+end
+
 LoadingGui.Parent = parent
 
 local Background = Instance.new("Frame")
@@ -95,8 +91,8 @@ Background.Parent = LoadingGui
 local RainFolder = Instance.new("Folder")
 RainFolder.Name = "RedRain"
 RainFolder.Parent = Background
-local RainActive = true
 
+local RainActive = true
 local function createRedRainDrop()
     local drop = Instance.new("Frame")
     drop.Size = UDim2.fromOffset(2, math.random(14,28))
