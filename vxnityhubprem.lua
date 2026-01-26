@@ -135,7 +135,7 @@ Glow.Size = UDim2.fromOffset(260, 120)
 Glow.AnchorPoint = Vector2.new(0.5, 0.5)
 Glow.Position = UDim2.fromScale(0.5, 0.38)
 Glow.BackgroundTransparency = 1
-Glow.Image = "rbxassetid://5028857084"
+Glow.Image = "rbxassetid://119784598022281"
 Glow.ImageTransparency = 0.35
 Glow.ScaleType = Enum.ScaleType.Fit
 Glow.ZIndex = 1
@@ -2288,7 +2288,7 @@ if UserInputService.TouchEnabled then
 	ToggleBtn.Position = UDim2.new(0.9, -60, 0.1, 0)
 	ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 	ToggleBtn.BorderSizePixel = 0
-	ToggleBtn.Image = "rbxassetid://97314042970903"
+	ToggleBtn.Image = "rbxassetid://119784598022281"
 	ToggleBtn.Active = true
 	ToggleBtn.Draggable = true
 	ToggleBtn.Parent = MobileGui
