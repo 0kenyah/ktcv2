@@ -11,18 +11,19 @@ local WebhookURL = "https://discord.com/api/webhooks/1464923263443402886/AMqNuy3
 
 local device = (UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled) and "Mobile" or "PC"
 local executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
-local username = LocalPlayer.Name or "Unknown Player"
-local userId = LocalPlayer.UserId or 0
+local username = (LocalPlayer and LocalPlayer.Name) or "Unknown Player"
+local userId = (LocalPlayer and LocalPlayer.UserId) or 0
 local placeId = game.PlaceId
 local gameName = "Unknown Game"
 pcall(function() gameName = MarketplaceService:GetProductInfo(placeId).Name end)
+
 local avatar = "https://api.newstargeted.com/roblox/users/v1/avatar-headshot?userid="..userId.."&size=720x720&format=Png&isCircular=false"
 local date = os.date("%d/%m/%Y")
 local time = os.date("%H:%M:%S")
 local country = "Unknown"
 local req = http_request or request or syn.request
 if req then
-    local res = req({Url="https://ipinfo.io/json", Method="GET"})
+    local res = req({ Url = "https://ipinfo.io/json", Method = "GET" })
     if res and res.Body then
         local data = HttpService:JSONDecode(res.Body)
         if data and data.country then country = data.country end
@@ -33,25 +34,30 @@ local payload = {
     embeds = {{
         title = "Vxnity Hub | Execution Log",
         color = 0,
-        thumbnail = {url = avatar},
+        thumbnail = { url = avatar },
         fields = {
-            {name="User", value=username, inline=true},
-            {name="UserId", value=tostring(userId), inline=true},
-            {name="Executor", value=executor, inline=true},
-            {name="Device", value=device, inline=true},
-            {name="Game", value=gameName, inline=false},
-            {name="PlaceId", value=tostring(placeId), inline=true},
-            {name="Date", value=date, inline=true},
-            {name="Time", value=time, inline=true},
-            {name="Country", value=country, inline=true}
+            { name = "User", value = username, inline = true },
+            { name = "UserId", value = tostring(userId), inline = true },
+            { name = "Executor", value = executor, inline = true },
+            { name = "Device", value = device, inline = true },
+            { name = "Game", value = gameName, inline = false },
+            { name = "PlaceId", value = tostring(placeId), inline = true },
+            { name = "Date", value = date, inline = true },
+            { name = "Time", value = time, inline = true },
+            { name = "Country", value = country, inline = true }
         },
-        footer={text="Repository: vxnityhub.lua"}
+        footer = { text = "Repository: vxnityhub.lua" }
     }}
 }
-if req then req({Url=WebhookURL, Method="POST", Headers={["Content-Type"]="application/json"}, Body=HttpService:JSONEncode(payload)}) end
+if req then
+    req({ Url = WebhookURL, Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = HttpService:JSONEncode(payload) })
+end
+
 task.wait(1)
 
 local selectedScript = nil
+
+-- NEW PROFESSIONAL LOADING --
 
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
@@ -61,12 +67,34 @@ LoadingGui.Parent = PlayerGui
 
 local Background = Instance.new("Frame")
 Background.Size = UDim2.fromScale(1,1)
-Background.BackgroundColor3 = Color3.fromRGB(10,10,15)
+Background.BackgroundColor3 = Color3.fromRGB(0,0,0)
 Background.BorderSizePixel = 0
 Background.Parent = LoadingGui
 
+local neonBack = Instance.new("Frame")
+neonBack.Size = UDim2.fromScale(1,1)
+neonBack.BackgroundTransparency = 1
+neonBack.Parent = Background
+
+for i=1,80 do
+    local p = Instance.new("Frame")
+    p.Size = UDim2.fromOffset(math.random(2,6),math.random(2,6))
+    p.Position = UDim2.new(math.random(), math.random(), 0, 0)
+    p.BackgroundColor3 = Color3.fromHSV(math.random(), 1, 1)
+    p.BackgroundTransparency = 0.6
+    p.BorderSizePixel = 0
+    p.Parent = neonBack
+    spawn(function()
+        while p and p.Parent do
+            p.Position = p.Position + UDim2.new(0,0,0,math.random(-1,1))
+            p.BackgroundColor3 = Color3.fromHSV((tick()*0.2)%1, 1, 1)
+            task.wait(0.03)
+        end
+    end)
+end
+
 local MainContainer = Instance.new("Frame")
-MainContainer.Size = UDim2.fromOffset(400,300)
+MainContainer.Size = UDim2.fromOffset(450,350)
 MainContainer.Position = UDim2.fromScale(0.5,0.5)
 MainContainer.AnchorPoint = Vector2.new(0.5,0.5)
 MainContainer.BackgroundTransparency = 1
@@ -75,11 +103,10 @@ MainContainer.Parent = Background
 local Glow = Instance.new("ImageLabel")
 Glow.Size = UDim2.fromOffset(260,120)
 Glow.AnchorPoint = Vector2.new(0.5,0.5)
-Glow.Position = UDim2.fromScale(0.5,0.38)
+Glow.Position = UDim2.fromScale(0.5,0.35)
 Glow.BackgroundTransparency = 1
 Glow.Image = "rbxassetid://5028857084"
 Glow.ScaleType = Enum.ScaleType.Fit
-Glow.ZIndex = 1
 Glow.Parent = MainContainer
 
 local Logo = Instance.new("ImageLabel")
@@ -89,108 +116,99 @@ Logo.Position = Glow.Position
 Logo.BackgroundTransparency = 1
 Logo.Image = "rbxassetid://119784598022281"
 Logo.ScaleType = Enum.ScaleType.Fit
-Logo.ZIndex = 2
 Logo.Parent = MainContainer
 
 local Stroke = Instance.new("UIStroke")
-Stroke.Thickness = 4
-Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-Stroke.Color = Color3.fromRGB(255,255,255)
+Stroke.Thickness = 5
+Stroke.Color = Color3.fromRGB(255,40,40)
 Stroke.Parent = Logo
-TweenService:Create(Stroke, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {Color=Color3.fromRGB(255,255,255)}):Play()
+TweenService:Create(Stroke,TweenInfo.new(1.8,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{Color=Color3.fromRGB(255,40,40)}):Play()
 
 local LoadingBarBG = Instance.new("Frame")
-LoadingBarBG.Size = UDim2.new(0.8,0,0,6)
-LoadingBarBG.Position = UDim2.fromScale(0.1,0.68)
-LoadingBarBG.BackgroundColor3 = Color3.fromRGB(40,40,50)
-LoadingBarBG.BorderSizePixel = 0
+LoadingBarBG.Size = UDim2.new(0.7,0,0,8)
+LoadingBarBG.Position = UDim2.fromScale(0.15,0.7)
+LoadingBarBG.BackgroundColor3 = Color3.fromRGB(25,25,30)
 LoadingBarBG.Parent = MainContainer
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(1,0)
-UICorner.Parent = LoadingBarBG
 
 local LoadingBarFill = Instance.new("Frame")
 LoadingBarFill.Size = UDim2.fromScale(0,1)
 LoadingBarFill.BackgroundColor3 = Color3.fromRGB(255,40,40)
-LoadingBarFill.BorderSizePixel = 0
 LoadingBarFill.Parent = LoadingBarBG
 
-local UICornerFill = Instance.new("UICorner")
-UICornerFill.CornerRadius = UDim.new(1,0)
-UICornerFill.Parent = LoadingBarFill
-
 local Status = Instance.new("TextLabel")
-Status.Size = UDim2.new(1,0,0,30)
-Status.Position = UDim2.fromScale(0,0.76)
+Status.Size = UDim2.new(1,0,0,28)
+Status.Position = UDim2.fromScale(0,0.77)
 Status.BackgroundTransparency = 1
+Status.TextColor3 = Color3.fromRGB(255,40,40)
+Status.TextSize = 15
+Status.Font = Enum.Font.GothamBold
 Status.Text = "Starting..."
-Status.TextColor3 = Color3.fromRGB(255,255,255)
-Status.TextSize = 14
-Status.Font = Enum.Font.GothamMedium
 Status.Parent = MainContainer
-
--- Glow animation
-TweenService:Create(Glow, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {ImageTransparency = 0.55}):Play()
-task.spawn(function()
-    local colors = { Color3.fromRGB(255,0,0), Color3.fromRGB(255,255,255), Color3.fromRGB(255,40,40) }
-    local i = 1
-    while Glow.Parent do
-        TweenService:Create(Glow, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageColor3 = colors[i]}):Play()
-        i = i % #colors + 1
-        task.wait(2)
-    end
-end)
 
 local displayedProgress = 0
 local targetProgress = 0
 RunService.RenderStepped:Connect(function(dt)
-    displayedProgress += (targetProgress-displayedProgress)*math.clamp(dt*6,0,1)
-    LoadingBarFill.Size = UDim2.fromScale(displayedProgress,1)
+    displayedProgress = displayedProgress + (targetProgress - displayedProgress) * math.clamp(dt * 2,0,1)
+    LoadingBarFill.Size = UDim2.fromScale(displayedProgress, 1)
 end)
 
-local function updateProgress(progress,text)
-    targetProgress = math.clamp(progress,0,1)
+local function updateProgress(progress, text)
+    targetProgress = progress
     Status.Text = text
-    task.wait(0.2)
+    task.wait(0.3)
 end
 
-updateProgress(0.2,"Checking Anticheat...")
-updateProgress(0.5,"Loading Bypass...")
-updateProgress(0.8,"Initializing UI...")
-updateProgress(1,"Ready to Select")
-task.wait(0.5)
+updateProgress(0.15,"Checking anticheat")
+updateProgress(0.45,"Loading bypass")
+updateProgress(0.75,"Preparing UI")
+updateProgress(1,"Ready to continue")
+
+task.wait(0.6)
+
+-- SCRIPT SELECTION --
+
+local TitleText = Instance.new("TextLabel")
+TitleText.Size = UDim2.new(1,0,0,30)
+TitleText.Position = UDim2.fromScale(0,0.6)
+TitleText.BackgroundTransparency = 1
+TitleText.Text = "Select a script"
+TitleText.TextColor3 = Color3.fromRGB(255,255,255)
+TitleText.Font = Enum.Font.GothamBold
+TitleText.TextSize = 18
+TitleText.Parent = MainContainer
 
 local TPSButton = Instance.new("TextButton")
 TPSButton.Size = UDim2.new(0.8,0,0,50)
-TPSButton.Position = UDim2.fromScale(0.1,0.6)
+TPSButton.Position = UDim2.fromScale(0.1,0.68)
 TPSButton.BackgroundColor3 = Color3.fromRGB(30,30,40)
-TPSButton.BorderColor3 = Color3.fromRGB(255,255,255)
+TPSButton.BorderColor3 = Color3.fromRGB(255,40,40)
 TPSButton.BorderSizePixel = 2
-TPSButton.Text = "TPS (Street Soccer)"
-TPSButton.TextColor3 = Color3.fromRGB(255,255,255)
-TPSButton.TextSize = 18
 TPSButton.Font = Enum.Font.GothamBold
+TPSButton.TextSize = 17
+TPSButton.TextColor3 = Color3.fromRGB(255,255,255)
+TPSButton.Text = "TPS (Street Soccer)"
 TPSButton.Parent = MainContainer
-
-local UICornerBtn = Instance.new("UICorner")
-UICornerBtn.CornerRadius = UDim.new(0,6)
-UICornerBtn.Parent = TPSButton
 
 TPSButton.MouseButton1Click:Connect(function()
     selectedScript = "TPS"
-    TPSButton.Text = "Launching..."
-    task.wait(0.3)
     LoadingGui:Destroy()
 
-    
-    local Window = require(game:GetService("ReplicatedStorage"):WaitForChild("WindUI")):CreateWindow("VxnityHub Premium",Enum.KeyCode.RightControl)
-    local MainTab = Window:CreateTab("Main")
-    local MiscTab = Window:CreateTab("Misc")
-    local SettingsTab = Window:CreateTab("Settings")
+    -- OPEN UI --
+    local WindUILib = require(game:GetService("ReplicatedStorage"):WaitForChild("WindUI"))
+    local Window = WindUILib:CreateWindow({
+        Title = "VxnityHub Premium",
+        Icon = "star",
+        Author = "Vxnity Team x Ktc Hub",
+        Folder = "KtcHub",
+        Size = UDim2.fromOffset(625, 440),
+        Transparent = true,
+        Theme = "Dark",
+        Resizable = true,
+        SideBarWidth = 150,
+    })
 
+    -- NOTIFICATION --
     local NotifyGui = Instance.new("ScreenGui")
-    NotifyGui.Name = "VxnityHubNotify"
     NotifyGui.Parent = PlayerGui
 
     local Notify = Instance.new("TextLabel")
@@ -205,9 +223,9 @@ TPSButton.MouseButton1Click:Connect(function()
     Notify.Parent = NotifyGui
     Notify.BackgroundTransparency = 1
 
-    TweenService:Create(Notify,TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{Position=UDim2.fromScale(0.5,0.1),BackgroundTransparency=0.3}):Play()
+    TweenService:Create(Notify,TweenInfo.new(0.5),{Position=UDim2.fromScale(0.5,0.1),BackgroundTransparency=0.3}):Play()
     task.wait(5)
-    TweenService:Create(Notify,TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{Position=UDim2.fromScale(0.5,-0.1),BackgroundTransparency=1}):Play()
+    TweenService:Create(Notify,TweenInfo.new(0.5),{Position=UDim2.fromScale(0.5,-0.1),BackgroundTransparency=1}):Play()
     task.wait(0.5)
     NotifyGui:Destroy()
 end)
