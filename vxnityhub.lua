@@ -75,10 +75,14 @@ task.wait(1)
 
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
 
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
-...
+LoadingGui.IgnoreGuiInset = true
+LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+local success, parent = pcall(function() return gethui and gethui() or game:GetService("CoreGui") end)
+if not success or not parent then parent = Players.LocalPlayer:WaitForChild("PlayerGui") end
 LoadingGui.Parent = parent
 
 local Background = Instance.new("Frame")
@@ -88,33 +92,9 @@ Background.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
 Background.BorderSizePixel = 0
 Background.Parent = LoadingGui
 
-
 local RainFolder = Instance.new("Folder")
 RainFolder.Name = "RedRain"
 RainFolder.Parent = Background
-
-local RainActive = true
-
-local success, parent = pcall(function()
-	return gethui and gethui() or game:GetService("CoreGui")
-end)
-if not success or not parent then
-	parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
-end
-
-LoadingGui.Parent = parent
-local Background = Instance.new("Frame")
-Background.Name = "Background"
-Background.Size = UDim2.fromScale(1, 1)
-Background.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-Background.BorderSizePixel = 0
-Background.Parent = LoadingGui
-
-
-local RainFolder = Instance.new("Folder")
-RainFolder.Name = "RedRain"
-RainFolder.Parent = Background
-
 local RainActive = true
 
 local function createRedRainDrop()
@@ -127,17 +107,14 @@ local function createRedRainDrop()
     drop.ZIndex = 1
     drop.Parent = RainFolder
 
-    local speed = math.random(800,1200)
-
+    local speed = math.random(800, 1200)
     local conn
     conn = RunService.RenderStepped:Connect(function(dt)
         if not RainActive or not drop.Parent then
             conn:Disconnect()
             return
         end
-
         drop.Position = drop.Position + UDim2.fromOffset(0, speed * dt)
-
         if drop.Position.Y.Scale > 1.2 then
             drop:Destroy()
             conn:Disconnect()
