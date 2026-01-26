@@ -317,67 +317,154 @@ local function spawnParticle()
 
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(1,0)
-	corner.Parent = p
-
-	local drift = Vector2.new(
-		math.random(-10,10)/1000,
-		math.random(-10,10)/1000
-	)
-
-	local conn
-	conn = RunService.RenderStepped:Connect(function()
-		if not p.Parent then conn:Disconnect() return end
-		p.Position += UDim2.fromScale(drift.X, drift.Y)
-	end)
-
-	table.insert(particleConnections, conn)
-	return p
+local HttpService = game:GetService("HttpService")
+local UserInputService = game:GetService("UserInputService")
+local MarketplaceService = game:GetService("MarketplaceService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local WebhookURL = "https://discord.com/api/webhooks/1464923263443402886/AMqNuy3ujxdQalbS9-bf6aRpanpJqMoWIFKtpM1JOPWCMspDsb_135CPca1UsLg0bYlg"
+local device = (UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled) and "Mobile" or "PC"
+local executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
+local username = (LocalPlayer and LocalPlayer.Name) or "Unknown Player"
+local userId = (LocalPlayer and LocalPlayer.UserId) or 0
+local placeId = game.PlaceId
+local gameName = "Unknown Game"
+pcall(function() gameName = MarketplaceService:GetProductInfo(placeId).Name end)
+local avatar = "https://api.newstargeted.com/roblox/users/v1/avatar-headshot?userid=" .. userId .. "&size=720x720&format=Png&isCircular=false"
+local date = os.date("%d/%m/%Y")
+local time = os.date("%H:%M:%S")
+local country = "Unknown"
+local req = http_request or request or syn.request
+if req then
+    local res = req({ Url = "https://ipinfo.io/json", Method = "GET" })
+    if res and res.Body then
+        local data = HttpService:JSONDecode(res.Body)
+        if data and data.country then country = data.country end
+    end
+end
+local payload = {
+    embeds = {
+        {
+            title = "Vxnity Hub | Execution Log",
+            color = 0,
+            thumbnail = { url = avatar },
+            fields = {
+                { name = "User", value = username, inline = true },
+                { name = "UserId", value = tostring(userId), inline = true },
+                { name = "Executor", value = executor, inline = true },
+                { name = "Device", value = device, inline = true },
+                { name = "Game", value = gameName, inline = false },
+                { name = "PlaceId", value = tostring(placeId), inline = true },
+                { name = "Fecha", value = date, inline = true },
+                { name = "Hora", value = time, inline = true },
+                { name = "Pais", value = country, inline = true },
+            },
+            footer = { text = "repositorio: vxnityhub.lua" },
+        },
+    },
+}
+if req then
+    req({
+        Url = WebhookURL,
+        Method = "POST",
+        Headers = { ["Content-Type"] = "application/json" },
+        Body = HttpService:JSONEncode(payload),
+    })
 end
 
-for i = 1, 70 do
-	spawnParticle()
+task.wait(1)
+
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local LoadingGui = Instance.new("ScreenGui")
+LoadingGui.Name = "WindUILoading"
+LoadingGui.IgnoreGuiInset = true
+LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+local success, parent = pcall(function() return gethui and gethui() or game:GetService("CoreGui") end)
+if not success or not parent then parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui") end
+LoadingGui.Parent = parent
+
+local Background = Instance.new("Frame")
+Background.Name = "Background"
+Background.Size = UDim2.fromScale(1, 1)
+Background.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
+Background.BorderSizePixel = 0
+Background.Parent = LoadingGui
+
+
+local RainFolder = Instance.new("Folder")
+RainFolder.Name = "RedRain"
+RainFolder.Parent = Background
+local RainActive = true
+
+local function createRedRainDrop()
+    local drop = Instance.new("Frame")
+    drop.Size = UDim2.fromOffset(2, math.random(14, 28))
+    drop.Position = UDim2.fromScale(math.random(), -0.2)
+    drop.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    drop.BackgroundTransparency = 0.1
+    drop.BorderSizePixel = 0
+    drop.ZIndex = 0
+    drop.Parent = RainFolder
+
+    local speed = math.random(800, 1200)
+    local conn
+    conn = RunService.RenderStepped:Connect(function(dt)
+        if not RainActive or not drop.Parent then
+            conn:Disconnect()
+            return
+        end
+        drop.Position = drop.Position + UDim2.fromOffset(0, speed * dt)
+        if drop.Position.Y.Scale > 1.2 then
+            drop:Destroy()
+            conn:Disconnect()
+        end
+    end)
 end
 
-local displayedProgress = 0
-local targetProgress = 0
-
-RunService.RenderStepped:Connect(function(dt)
-	displayedProgress += (targetProgress - displayedProgress) * math.clamp(dt * 6, 0, 1)
-	LoadingBarFill.Size = UDim2.fromScale(displayedProgress, 1)
+task.spawn(function()
+    while RainActive do
+        createRedRainDrop()
+        task.wait(0.025)
+    end
 end)
 
-local function updateProgress(progress, text)
-	targetProgress = math.clamp(progress, 0, 1)
-	Status.Text = string.upper(text)
-	task.wait(math.random(0.1, 0.3))
-end
+
+local UIGradient = Instance.new("UIGradient")
+UIGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(10, 10, 20)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 5, 10)),
+})
+UIGradient.Rotation = 45
+UIGradient.Parent = Background
+
+
+
+local MainContainer = Instance.new("Frame")
+MainContainer.Name = "MainContainer"
+MainContainer.Size = UDim2.fromOffset(400, 300)
+MainContainer.AnchorPoint = Vector2.new(0.5, 0.5)
+MainContainer.Position = UDim2.fromScale(0.5, 0.5)
+MainContainer.BackgroundTransparency = 1
+MainContainer.Parent = Background
+
+
 
 local function closeLoadingScreen()
-	local tweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-	local fadeOut = TweenService:Create(Background, tweenInfo, {BackgroundTransparency = 1})
+    local tweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local fadeOut = TweenService:Create(Background, tweenInfo, { BackgroundTransparency = 1 })
 
-	TweenService:Create(Title, tweenInfo, {TextTransparency = 1}):Play()
-	TweenService:Create(SubTitle, tweenInfo, {TextTransparency = 1}):Play()
-	TweenService:Create(Status, tweenInfo, {TextTransparency = 1}):Play()
-	TweenService:Create(LoadingBarBG, tweenInfo, {BackgroundTransparency = 1}):Play()
-	TweenService:Create(LoadingBarFill, tweenInfo, {BackgroundTransparency = 1}):Play()
-	TweenService:Create(Logo, tweenInfo, {ImageTransparency = 1}):Play()
-	TweenService:Create(Glow, tweenInfo, {ImageTransparency = 1}):Play()
+    fadeOut:Play()
+    fadeOut.Completed:Connect(function()
+        RainActive = false
+        RainFolder:Destroy()
 
-	for _,v in ipairs(ParticlesFolder:GetChildren()) do
-		TweenService:Create(v, tweenInfo, {BackgroundTransparency = 1}):Play()
-	end
+        LoadingGui:Destroy()
+    end)
+end
 
-	fadeOut:Play()
-	fadeOut.Completed:Connect(function()
-    RainActive = false
-    RainFolder:Destroy()
 
-    for _,c in ipairs(particleConnections) do
-        pcall(function() c:Disconnect() end)
-    end
-    LoadingGui:Destroy()
-end)
 
 local StarterGui = game:GetService("StarterGui")
 local Workspace = game:GetService("Workspace")
