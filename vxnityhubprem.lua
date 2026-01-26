@@ -55,58 +55,49 @@ end
 
 task.wait(1)
 
-local selectedScript = nil
-
--- NEW PROFESSIONAL LOADING --
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
 
 local LoadingGui = Instance.new("ScreenGui")
-LoadingGui.Name = "WindUILoading"
+LoadingGui.Name = "VxnityUltraLoader"
 LoadingGui.IgnoreGuiInset = true
 LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 LoadingGui.Parent = PlayerGui
 
 local Background = Instance.new("Frame")
 Background.Size = UDim2.fromScale(1,1)
-Background.BackgroundColor3 = Color3.fromRGB(0,0,0)
+Background.BackgroundColor3 = Color3.fromRGB(5,0,0)
 Background.BorderSizePixel = 0
 Background.Parent = LoadingGui
 
-local neonBack = Instance.new("Frame")
-neonBack.Size = UDim2.fromScale(1,1)
-neonBack.BackgroundTransparency = 1
-neonBack.Parent = Background
-
-for i=1,80 do
-    local p = Instance.new("Frame")
-    p.Size = UDim2.fromOffset(math.random(2,6),math.random(2,6))
-    p.Position = UDim2.new(math.random(), math.random(), 0, 0)
-    p.BackgroundColor3 = Color3.fromHSV(math.random(), 1, 1)
-    p.BackgroundTransparency = 0.6
-    p.BorderSizePixel = 0
-    p.Parent = neonBack
-    spawn(function()
-        while p and p.Parent do
-            p.Position = p.Position + UDim2.new(0,0,0,math.random(-1,1))
-            p.BackgroundColor3 = Color3.fromHSV((tick()*0.2)%1, 1, 1)
-            task.wait(0.03)
-        end
-    end)
-end
+local UIGradient = Instance.new("UIGradient", Background)
+UIGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(30,0,0)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(10,0,0))
+})
+UIGradient.Rotation = 45
 
 local MainContainer = Instance.new("Frame")
-MainContainer.Size = UDim2.fromOffset(450,350)
-MainContainer.Position = UDim2.fromScale(0.5,0.5)
+MainContainer.Size = UDim2.fromOffset(420,320)
 MainContainer.AnchorPoint = Vector2.new(0.5,0.5)
+MainContainer.Position = UDim2.fromScale(0.5,0.5)
 MainContainer.BackgroundTransparency = 1
 MainContainer.Parent = Background
 
 local Glow = Instance.new("ImageLabel")
-Glow.Size = UDim2.fromOffset(260,120)
+Glow.Size = UDim2.fromOffset(280,130)
 Glow.AnchorPoint = Vector2.new(0.5,0.5)
 Glow.Position = UDim2.fromScale(0.5,0.35)
 Glow.BackgroundTransparency = 1
 Glow.Image = "rbxassetid://5028857084"
 Glow.ScaleType = Enum.ScaleType.Fit
+Glow.ZIndex = 1
+Glow.ImageColor3 = Color3.fromRGB(255,0,0)
+Glow.ImageTransparency = 0.4
 Glow.Parent = MainContainer
 
 local Logo = Instance.new("ImageLabel")
@@ -114,120 +105,130 @@ Logo.Size = Glow.Size
 Logo.AnchorPoint = Vector2.new(0.5,0.5)
 Logo.Position = Glow.Position
 Logo.BackgroundTransparency = 1
-Logo.Image = "rbxassetid://119784598022281"
+Logo.Image = "rbxassetid://97314042970903"
 Logo.ScaleType = Enum.ScaleType.Fit
+Logo.ZIndex = 2
 Logo.Parent = MainContainer
 
-local Stroke = Instance.new("UIStroke")
+local Stroke = Instance.new("UIStroke", Logo)
+Stroke.Color = Color3.fromRGB(255,0,0)
 Stroke.Thickness = 5
-Stroke.Color = Color3.fromRGB(255,40,40)
-Stroke.Parent = Logo
-TweenService:Create(Stroke,TweenInfo.new(1.8,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{Color=Color3.fromRGB(255,40,40)}):Play()
+TweenService:Create(Stroke, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {Color=Color3.fromRGB(255,80,80)}):Play()
+
+TweenService:Create(Glow, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {ImageTransparency=0.65}):Play()
+task.spawn(function()
+	local colors = {Color3.fromRGB(255,0,0), Color3.fromRGB(255,50,50), Color3.fromRGB(255,25,25)}
+	local i = 1
+	while Glow.Parent do
+		TweenService:Create(Glow, TweenInfo.new(1.5), {ImageColor3 = colors[i]}):Play()
+		i = i % #colors + 1
+		task.wait(1.5)
+	end
+end)
 
 local LoadingBarBG = Instance.new("Frame")
-LoadingBarBG.Size = UDim2.new(0.7,0,0,8)
-LoadingBarBG.Position = UDim2.fromScale(0.15,0.7)
-LoadingBarBG.BackgroundColor3 = Color3.fromRGB(25,25,30)
+LoadingBarBG.Size = UDim2.new(0.8,0,0,8)
+LoadingBarBG.Position = UDim2.fromScale(0.1,0.68)
+LoadingBarBG.BackgroundColor3 = Color3.fromRGB(40,40,50)
+LoadingBarBG.BorderSizePixel = 0
 LoadingBarBG.Parent = MainContainer
+
+local UICornerBG = Instance.new("UICorner", LoadingBarBG)
+UICornerBG.CornerRadius = UDim.new(1,0)
 
 local LoadingBarFill = Instance.new("Frame")
 LoadingBarFill.Size = UDim2.fromScale(0,1)
-LoadingBarFill.BackgroundColor3 = Color3.fromRGB(255,40,40)
+LoadingBarFill.BackgroundColor3 = Color3.fromRGB(255,0,0)
+LoadingBarFill.BorderSizePixel = 0
 LoadingBarFill.Parent = LoadingBarBG
 
+local UICornerFill = Instance.new("UICorner", LoadingBarFill)
+UICornerFill.CornerRadius = UDim.new(1,0)
+
 local Status = Instance.new("TextLabel")
-Status.Size = UDim2.new(1,0,0,28)
-Status.Position = UDim2.fromScale(0,0.77)
+Status.Size = UDim2.new(1,0,0,30)
+Status.Position = UDim2.fromScale(0,0.76)
 Status.BackgroundTransparency = 1
-Status.TextColor3 = Color3.fromRGB(255,40,40)
-Status.TextSize = 15
+Status.Text = "Charging ..."
+Status.TextColor3 = Color3.fromRGB(255,100,100)
+Status.TextSize = 16
 Status.Font = Enum.Font.GothamBold
-Status.Text = "Starting..."
 Status.Parent = MainContainer
 
 local displayedProgress = 0
 local targetProgress = 0
 RunService.RenderStepped:Connect(function(dt)
-    displayedProgress = displayedProgress + (targetProgress - displayedProgress) * math.clamp(dt * 2,0,1)
-    LoadingBarFill.Size = UDim2.fromScale(displayedProgress, 1)
+	displayedProgress += (targetProgress - displayedProgress) * math.clamp(dt*6,0,1)
+	LoadingBarFill.Size = UDim2.fromScale(displayedProgress,1)
 end)
 
-local function updateProgress(progress, text)
-    targetProgress = progress
-    Status.Text = text
-    task.wait(0.3)
+local function updateProgress(progress,text)
+	targetProgress = math.clamp(progress,0,1)
+	Status.Text = text
+	task.wait(0.2)
 end
 
-updateProgress(0.15,"Checking anticheat")
-updateProgress(0.45,"Loading bypass")
-updateProgress(0.75,"Preparing UI")
-updateProgress(1,"Ready to continue")
+updateProgress(0.2,"Checking for updates..")
+updateProgress(0.5,"Loading bypass..." )
+updateProgress(0.8,"Initializing UI..." )
+updateProgress(1,"Script Running ")
+task.wait(0.5)
 
-task.wait(0.6)
+Status.Visible = false
+LoadingBarBG.Visible = false
 
--- SCRIPT SELECTION --
+local OpenBtn = Instance.new("TextButton")
+OpenBtn.Size = UDim2.new(0.8,0,0,50)
+OpenBtn.Position = UDim2.fromScale(0.1,0.6)
+OpenBtn.BackgroundColor3 = Color3.fromRGB(30,0,0)
+OpenBtn.BorderColor3 = Color3.fromRGB(255,0,0)
+OpenBtn.BorderSizePixel = 3
+OpenBtn.Text = "Run Script "
+OpenBtn.TextColor3 = Color3.fromRGB(255,255,255)
+OpenBtn.Font = Enum.Font.GothamBold
+OpenBtn.TextSize = 18
+OpenBtn.Parent = MainContainer
 
-local TitleText = Instance.new("TextLabel")
-TitleText.Size = UDim2.new(1,0,0,30)
-TitleText.Position = UDim2.fromScale(0,0.6)
-TitleText.BackgroundTransparency = 1
-TitleText.Text = "Select a script"
-TitleText.TextColor3 = Color3.fromRGB(255,255,255)
-TitleText.Font = Enum.Font.GothamBold
-TitleText.TextSize = 18
-TitleText.Parent = MainContainer
+local UICornerBtn = Instance.new("UICorner", OpenBtn)
+UICornerBtn.CornerRadius = UDim.new(0,8)
 
-local TPSButton = Instance.new("TextButton")
-TPSButton.Size = UDim2.new(0.8,0,0,50)
-TPSButton.Position = UDim2.fromScale(0.1,0.68)
-TPSButton.BackgroundColor3 = Color3.fromRGB(30,30,40)
-TPSButton.BorderColor3 = Color3.fromRGB(255,40,40)
-TPSButton.BorderSizePixel = 2
-TPSButton.Font = Enum.Font.GothamBold
-TPSButton.TextSize = 17
-TPSButton.TextColor3 = Color3.fromRGB(255,255,255)
-TPSButton.Text = "TPS (Street Soccer)"
-TPSButton.Parent = MainContainer
+local ParticlesFolder = Instance.new("Folder")
+ParticlesFolder.Name = "RainParticles"
+ParticlesFolder.Parent = Background
 
-TPSButton.MouseButton1Click:Connect(function()
-    selectedScript = "TPS"
-    LoadingGui:Destroy()
+local function spawnRainParticle()
+	local p = Instance.new("Frame")
+	local size = math.random(2,5)
+	p.Size = UDim2.fromOffset(size,size*3)
+	p.Position = UDim2.fromScale(math.random(), -0.05)
+	p.BackgroundColor3 = Color3.fromRGB(255,0,0)
+	p.BorderSizePixel = 0
+	p.BackgroundTransparency = 0.3
+	p.ZIndex = 0
+	p.Parent = ParticlesFolder
+	local corner = Instance.new("UICorner", p)
+	corner.CornerRadius = UDim.new(1,0)
+	local speed = math.random(50,150)/1000
+	local conn
+	conn = RunService.RenderStepped:Connect(function(dt)
+		if not p.Parent then conn:Disconnect() return end
+		p.Position += UDim2.new(0,speed,0,dt*3)
+		if p.Position.Y.Scale > 1 then p:Destroy() conn:Disconnect() end
+	end)
+end
 
-    -- OPEN UI --
-    local WindUILib = require(game:GetService("ReplicatedStorage"):WaitForChild("WindUI"))
-    local Window = WindUILib:CreateWindow({
-        Title = "VxnityHub Premium",
-        Icon = "star",
-        Author = "Vxnity Team x Ktc Hub",
-        Folder = "KtcHub",
-        Size = UDim2.fromOffset(625, 440),
-        Transparent = true,
-        Theme = "Dark",
-        Resizable = true,
-        SideBarWidth = 150,
-    })
+for i=1,50 do spawnRainParticle() end
+task.spawn(function()
+	while LoadingGui.Parent do
+		spawnRainParticle()
+		task.wait(0.03)
+	end
+end)
 
-    -- NOTIFICATION --
-    local NotifyGui = Instance.new("ScreenGui")
-    NotifyGui.Parent = PlayerGui
-
-    local Notify = Instance.new("TextLabel")
-    Notify.Size = UDim2.fromOffset(450,50)
-    Notify.Position = UDim2.fromScale(0.5,-0.1)
-    Notify.AnchorPoint = Vector2.new(0.5,0)
-    Notify.BackgroundColor3 = Color3.fromRGB(25,25,25)
-    Notify.TextColor3 = Color3.fromRGB(255,255,255)
-    Notify.Font = Enum.Font.GothamBold
-    Notify.TextSize = 16
-    Notify.Text = "If you're enjoying the script, invite your friends to the Discord server!"
-    Notify.Parent = NotifyGui
-    Notify.BackgroundTransparency = 1
-
-    TweenService:Create(Notify,TweenInfo.new(0.5),{Position=UDim2.fromScale(0.5,0.1),BackgroundTransparency=0.3}):Play()
-    task.wait(5)
-    TweenService:Create(Notify,TweenInfo.new(0.5),{Position=UDim2.fromScale(0.5,-0.1),BackgroundTransparency=1}):Play()
-    task.wait(0.5)
-    NotifyGui:Destroy()
+OpenBtn.MouseButton1Click:Connect(function()
+	OpenBtn.Text = "Cargando..."
+	task.wait(0.2)
+	LoadingGui:Destroy()
 end)
 
 local StarterGui = game:GetService("StarterGui")
