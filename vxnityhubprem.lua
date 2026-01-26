@@ -76,12 +76,14 @@ task.wait(1)
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
+
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
 LoadingGui.IgnoreGuiInset = true
 LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-local success, parent = pcall(function() return gethui and gethui() or game:GetService("CoreGui") end)
-if not success or not parent then parent = Players.LocalPlayer:WaitForChild("PlayerGui") end
+local parent
+pcall(function() parent = gethui() end)
+if not parent then parent = Players.LocalPlayer:WaitForChild("PlayerGui") end
 LoadingGui.Parent = parent
 
 local Background = Instance.new("Frame")
@@ -107,17 +109,16 @@ Logo.Position = UDim2.fromScale(0.5,0.33)
 Logo.AnchorPoint = Vector2.new(0.5,0.5)
 Logo.BackgroundTransparency = 1
 Logo.Image = "rbxassetid://119784598022281"
-Logo.ScaleType = Enum.ScaleType.Fit
+Logo.ScaleType = Enum.ScaleType.Stretch
 Logo.Parent = Main
 
-local Glow = Instance.new("ImageLabel")
-Glow.Size = Logo.Size
-Glow.Position = Logo.Position
-Glow.AnchorPoint = Vector2.new(0.5,0.5)
-Glow.BackgroundTransparency = 1
-Glow.Image = "rbxassetid://5028857084"
-Glow.ImageColor3 = Color3.fromRGB(255,50,50)
-Glow.Parent = Main
+local Stroke = Instance.new("UIStroke")
+Stroke.Thickness = 4
+Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+Stroke.Color = Color3.fromRGB(255,50,50)
+Stroke.Parent = Logo
+
+TweenService:Create(Stroke, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {Color=Color3.fromRGB(255,20,20)}):Play()
 
 local LoadingBarBG = Instance.new("Frame")
 LoadingBarBG.Size = UDim2.new(0.8,0,0,8)
@@ -139,8 +140,6 @@ Status.TextColor3 = Color3.fromRGB(255,100,100)
 Status.Font = Enum.Font.GothamBold
 Status.TextSize = 16
 Status.Parent = Main
-
-TweenService:Create(Glow, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {ImageTransparency = 0.4, ImageColor3 = Color3.fromRGB(255,20,20)}):Play()
 
 local circleParticles = {}
 for i=1,60 do
