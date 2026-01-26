@@ -73,14 +73,13 @@ end
 
 task.wait(1)
 
-local Players = game:GetService("Players")
+
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
 local PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
 local selectedScript
-
--- Nuevo Loading profesional + selector TPS integrado
 
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
@@ -97,7 +96,6 @@ local Main = Instance.new("Frame")
 Main.Size = UDim2.fromOffset(420,320)
 Main.Position = UDim2.fromScale(0.5,0.5)
 Main.AnchorPoint = Vector2.new(0.5,0.5)
-Main.BackgroundTransparency = 1
 Main.Parent = Background
 
 local Logo = Instance.new("ImageLabel")
@@ -111,10 +109,10 @@ Logo.Parent = Main
 
 local Stroke = Instance.new("UIStroke")
 Stroke.Thickness = 4
+Stroke.Color = Color3.fromRGB(255,255,255)
 Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-Stroke.Color = Color3.fromRGB(255,50,50)
 Stroke.Parent = Logo
-TweenService:Create(Stroke, TweenInfo.new(1.8,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{Color=Color3.fromRGB(255,20,20)}):Play()
+TweenService:Create(Stroke,TweenInfo.new(1.8,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{Color=Color3.fromRGB(255,255,255)}):Play()
 
 local LoadingBarBG = Instance.new("Frame")
 LoadingBarBG.Size = UDim2.new(0.8,0,0,8)
@@ -146,10 +144,10 @@ end)
 
 local StatusTexts = {
     "Starting ...",
-    "Checking Anti-cheat ...",
+    "Checking for Updates ...",
     "Loading Bypass ...",
-    "Starting UI ...",
-    "Ready to Start "
+    "Starting UI. ..",
+    "Ready to Play "
 }
 
 task.spawn(function()
@@ -162,47 +160,35 @@ end)
 task.delay(3.5,function()
     LoadingBarFill.Size = UDim2.fromScale(1,1)
 
-    
-    local Title = Instance.new("TextLabel",Main)
+    local Title = Instance.new("TextLabel")
     Title.Size = UDim2.new(1,0,0,40)
     Title.Position = UDim2.fromScale(0,0.05)
+    Title.BackgroundTransparency = 1
     Title.Text = "Select Script"
     Title.TextColor3 = Color3.fromRGB(255,255,255)
     Title.Font = Enum.Font.GothamBold
     Title.TextSize = 20
-    Title.BackgroundTransparency = 1
-
-    local SubTitle = Instance.new("TextLabel",Main)
-    SubTitle.Size = UDim2.new(1,0,0,30)
-    SubTitle.Position = UDim2.fromScale(0,0.12)
-    SubTitle.Text = "Choose your configuration"
-    SubTitle.TextColor3 = Color3.fromRGB(200,200,200)
-    SubTitle.Font = Enum.Font.Gotham
-    SubTitle.TextSize = 14
-    SubTitle.BackgroundTransparency = 1
+    Title.Parent = Main
 
     local TPSButton = Instance.new("TextButton")
     TPSButton.Size = UDim2.new(0.8,0,0,50)
     TPSButton.Position = UDim2.fromScale(0.1,0.6)
     TPSButton.BackgroundColor3 = Color3.fromRGB(30,30,40)
-    TPSButton.BorderColor3 = Color3.fromRGB(0,170,255)
+    TPSButton.BorderColor3 = Color3.fromRGB(255,255,255)
     TPSButton.BorderSizePixel = 2
     TPSButton.Text = "TPS (Street Soccer)"
     TPSButton.TextColor3 = Color3.fromRGB(255,255,255)
-    TPSButton.Font = Enum.Font.GothamBold
     TPSButton.TextSize = 18
+    TPSButton.Font = Enum.Font.GothamBold
     TPSButton.Parent = Main
 
     TPSButton.MouseButton1Click:Connect(function()
         selectedScript = "TPS"
         TPSButton.Text = "Launching..."
         task.wait(0.3)
-        Background:TweenPosition(UDim2.new(0,0,1,0),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,0.5)
-        task.wait(0.5)
         LoadingGui:Destroy()
     end)
-end)      
-
+end)
 
 local StarterGui = game:GetService("StarterGui")
 local Workspace = game:GetService("Workspace")
