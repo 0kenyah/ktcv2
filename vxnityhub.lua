@@ -99,6 +99,11 @@ Background.Size = UDim2.fromScale(1, 1)
 Background.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
 Background.BorderSizePixel = 0
 Background.Parent = LoadingGui
+local RainFolder = Instance.new("Folder")
+RainFolder.Name = "RedRain"
+RainFolder.Parent = Background
+
+local RainActive = true
 return p
 end
 local function createRedRainDrop()
