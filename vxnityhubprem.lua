@@ -80,6 +80,8 @@ local PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
 local selectedScript
 
+-- Nuevo Loading profesional + selector TPS integrado
+
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
 LoadingGui.IgnoreGuiInset = true
@@ -90,11 +92,6 @@ local Background = Instance.new("Frame")
 Background.Size = UDim2.fromScale(1,1)
 Background.BackgroundColor3 = Color3.fromRGB(15,0,0)
 Background.Parent = LoadingGui
-
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Color = ColorSequence.new(Color3.fromRGB(50,0,0), Color3.fromRGB(15,0,0))
-UIGradient.Rotation = 90
-UIGradient.Parent = Background
 
 local Main = Instance.new("Frame")
 Main.Size = UDim2.fromOffset(420,320)
@@ -134,35 +131,11 @@ local Status = Instance.new("TextLabel")
 Status.Size = UDim2.new(1,0,0,30)
 Status.Position = UDim2.fromScale(0,0.78)
 Status.BackgroundTransparency = 1
-Status.Text = "Starting..."
+Status.Text = "Starting ..."
 Status.TextColor3 = Color3.fromRGB(255,100,100)
 Status.Font = Enum.Font.GothamBold
 Status.TextSize = 16
 Status.Parent = Main
-
-local circleParticles = {}
-for i=1,60 do
-    local p = Instance.new("Frame")
-    p.Size = UDim2.fromOffset(4,4)
-    p.Position = UDim2.fromScale(0.5,0.5)
-    p.BackgroundColor3 = Color3.fromRGB(255,150,150)
-    p.BorderSizePixel = 0
-    p.AnchorPoint = Vector2.new(0.5,0.5)
-    p.Parent = Background
-    table.insert(circleParticles,p)
-end
-
-local angle = 0
-RunService.RenderStepped:Connect(function(dt)
-    angle += dt*60
-    for index,part in ipairs(circleParticles) do
-        local rad = (index/#circleParticles)*math.pi*2
-        local x = math.cos(rad+math.rad(angle))*300
-        local y = math.sin(rad+math.rad(angle))*200
-        part.Position = UDim2.fromOffset(Background.AbsoluteSize.X/2+x,Background.AbsoluteSize.Y/2+y)
-        part.BackgroundColor3 = Color3.fromHSV((tick()*0.3+index/#circleParticles)%1,0.8,1)
-    end
-end)
 
 local displayed = 0
 local target = 1
@@ -172,61 +145,63 @@ RunService.RenderStepped:Connect(function(dt)
 end)
 
 local StatusTexts = {
-    "Starting...",
-    "Download Bypass...",
-    "Applying Settings...",
-    "Updating Script ...",
-    "Almost Done..."
+    "Starting ...",
+    "Checking Anti-cheat ...",
+    "Loading Bypass ...",
+    "Starting UI ...",
+    "Ready to Start "
 }
 
 task.spawn(function()
-    for i,text in ipairs(StatusTexts) do
+    for _,text in ipairs(StatusTexts) do
         Status.Text = text
         task.wait(0.8)
     end
 end)
 
-task.delay(4,function()
-    local t = TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
-    TweenService:Create(Background,t,{BackgroundTransparency=1}):Play()
-    TweenService:Create(Main,t,{BackgroundTransparency=1}):Play()
-    task.wait(0.6)
-    LoadingGui:Destroy()
+task.delay(3.5,function()
+    LoadingBarFill.Size = UDim2.fromScale(1,1)
 
-    repeat task.wait(0.1) until selectedScript
+    
+    local Title = Instance.new("TextLabel",Main)
+    Title.Size = UDim2.new(1,0,0,40)
+    Title.Position = UDim2.fromScale(0,0.05)
+    Title.Text = "Select Script"
+    Title.TextColor3 = Color3.fromRGB(255,255,255)
+    Title.Font = Enum.Font.GothamBold
+    Title.TextSize = 20
+    Title.BackgroundTransparency = 1
 
-    if selectedScript then
-        
-        
-        local WindUI = require(game:GetService("ReplicatedStorage"):WaitForChild("WindUI"))
-        local window = WindUI:CreateWindow("VxnityHub Premium",Enum.KeyCode.RightControl)
-        window:CreateTab("Main")
-        window:CreateTab("Misc")
-        window:CreateTab("Settings")
-    end
+    local SubTitle = Instance.new("TextLabel",Main)
+    SubTitle.Size = UDim2.new(1,0,0,30)
+    SubTitle.Position = UDim2.fromScale(0,0.12)
+    SubTitle.Text = "Choose your configuration"
+    SubTitle.TextColor3 = Color3.fromRGB(200,200,200)
+    SubTitle.Font = Enum.Font.Gotham
+    SubTitle.TextSize = 14
+    SubTitle.BackgroundTransparency = 1
 
-    local NotifyGui = Instance.new("ScreenGui")
-    NotifyGui.Name = "VxnityHubNotify"
-    NotifyGui.Parent = PlayerGui
+    local TPSButton = Instance.new("TextButton")
+    TPSButton.Size = UDim2.new(0.8,0,0,50)
+    TPSButton.Position = UDim2.fromScale(0.1,0.6)
+    TPSButton.BackgroundColor3 = Color3.fromRGB(30,30,40)
+    TPSButton.BorderColor3 = Color3.fromRGB(0,170,255)
+    TPSButton.BorderSizePixel = 2
+    TPSButton.Text = "TPS (Street Soccer)"
+    TPSButton.TextColor3 = Color3.fromRGB(255,255,255)
+    TPSButton.Font = Enum.Font.GothamBold
+    TPSButton.TextSize = 18
+    TPSButton.Parent = Main
 
-    local Notify = Instance.new("TextLabel")
-    Notify.Size = UDim2.fromOffset(450,50)
-    Notify.Position = UDim2.fromScale(0.5,-0.1)
-    Notify.AnchorPoint = Vector2.new(0.5,0)
-    Notify.BackgroundColor3 = Color3.fromRGB(25,25,25)
-    Notify.TextColor3 = Color3.fromRGB(255,255,255)
-    Notify.Font = Enum.Font.GothamBold
-    Notify.TextSize = 16
-    Notify.Text = "If you're enjoying the script, invite your friends to the Discord server!"
-    Notify.Parent = NotifyGui
-    Notify.BackgroundTransparency = 1
-
-    TweenService:Create(Notify,TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{Position=UDim2.fromScale(0.5,0.1),BackgroundTransparency=0.3}):Play()
-    task.wait(5)
-    TweenService:Create(Notify,TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{Position=UDim2.fromScale(0.5,-0.1),BackgroundTransparency=1}):Play()
-    task.wait(0.5)
-    NotifyGui:Destroy()
-end)
+    TPSButton.MouseButton1Click:Connect(function()
+        selectedScript = "TPS"
+        TPSButton.Text = "Launching..."
+        task.wait(0.3)
+        Background:TweenPosition(UDim2.new(0,0,1,0),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,0.5)
+        task.wait(0.5)
+        LoadingGui:Destroy()
+    end)
+end)      
 
 
 local StarterGui = game:GetService("StarterGui")
