@@ -75,6 +75,11 @@ task.wait(1)
 
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
+local RainFolder = Instance.new("Folder")
+RainFolder.Name = "RedRain"
+RainFolder.Parent = Background
+
+local RainActive = true
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "WindUILoading"
 LoadingGui.IgnoreGuiInset = true
@@ -94,6 +99,85 @@ Background.Size = UDim2.fromScale(1, 1)
 Background.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
 Background.BorderSizePixel = 0
 Background.Parent = LoadingGui
+return p
+end
+local function createRedRainDrop()
+    local drop = Instance.new("Frame")
+    drop.Size = UDim2.fromOffset(2, math.random(14,28))
+    drop.Position = UDim2.fromScale(math.random(), -0.2)
+    drop.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    drop.BackgroundTransparency = 0.1
+    drop.BorderSizePixel = 0
+    drop.ZIndex = 1
+    drop.Parent = RainFolder
+
+    local speed = math.random(800,1200)
+
+    local conn
+    conn = RunService.RenderStepped:Connect(function(dt)
+        if not RainActive or not drop.Parent then
+            conn:Disconnect()
+            return
+        end
+
+        drop.Position = drop.Position + UDim2.fromOffset(0, speed * dt)
+
+        if drop.Position.Y.Scale > 1.2 then
+            drop:Destroy()
+            conn:Disconnect()
+        end
+    end)
+end
+
+task.spawn(function()
+    while RainActive do
+        createRedRainDrop()
+        task.wait(0.025)
+    end
+end)
+
+
+
+local RunService = game:GetService("RunService")
+
+local RainFolder = Instance.new("Folder")
+RainFolder.Name = "RedRain"
+RainFolder.Parent = Background
+
+local RainActive = true
+local function createRedRainDrop()
+    local drop = Instance.new("Frame")
+    drop.Size = UDim2.fromOffset(2, math.random(14,28))
+    drop.Position = UDim2.fromScale(math.random(), -0.15)
+    drop.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    drop.BackgroundTransparency = 0.1
+    drop.BorderSizePixel = 0
+    drop.Parent = RainFolder
+
+    local speed = math.random(700,1100)
+
+    local conn
+    conn = RunService.RenderStepped:Connect(function(dt)
+        if not RainActive or not drop.Parent then
+            conn:Disconnect()
+            return
+        end
+
+        drop.Position = drop.Position + UDim2.fromOffset(0, speed * dt)
+
+        if drop.Position.Y.Scale > 1.1 then
+            drop:Destroy()
+            conn:Disconnect()
+        end
+    end)
+end
+
+task.spawn(function()
+    while RainActive do
+        createRedRainDrop()
+        task.wait(0.025)
+    end
+end)
 
 local UIGradient = Instance.new("UIGradient")
 UIGradient.Color = ColorSequence.new({
@@ -147,7 +231,7 @@ Logo.Size = Glow.Size
 Logo.AnchorPoint = Vector2.new(0.5, 0.5)
 Logo.Position = Glow.Position
 Logo.BackgroundTransparency = 1
-Logo.Image = "rbxassetid://97314042970903"
+Logo.Image = "rbxassetid://119784598022281"
 Logo.ScaleType = Enum.ScaleType.Fit
 Logo.ZIndex = 2
 Logo.Parent = MainContainer
@@ -167,7 +251,7 @@ UICorner.Parent = LoadingBarBG
 local LoadingBarFill = Instance.new("Frame")
 LoadingBarFill.Name = "LoadingBarFill"
 LoadingBarFill.Size = UDim2.fromScale(0, 1)
-LoadingBarFill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+LoadingBarFill.BackgroundColor3 = Color3.fromRGB(255,0,0)
 LoadingBarFill.BorderSizePixel = 0
 LoadingBarFill.Parent = LoadingBarBG
 
@@ -286,12 +370,14 @@ local function closeLoadingScreen()
 
 	fadeOut:Play()
 	fadeOut.Completed:Connect(function()
-		for _,c in ipairs(particleConnections) do
-			pcall(function() c:Disconnect() end)
-		end
-		LoadingGui:Destroy()
-	end)
-end
+    RainActive = false
+    RainFolder:Destroy()
+
+    for _,c in ipairs(particleConnections) do
+        pcall(function() c:Disconnect() end)
+    end
+    LoadingGui:Destroy()
+end)
 
 local StarterGui = game:GetService("StarterGui")
 local Workspace = game:GetService("Workspace")
@@ -2384,7 +2470,7 @@ if UserInputService.TouchEnabled then
 	ToggleBtn.Position = UDim2.new(0.9, -60, 0.1, 0)
 	ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 	ToggleBtn.BorderSizePixel = 0
-	ToggleBtn.Image = "rbxassetid://97314042970903"
+	ToggleBtn.Image = "rbxassetid://119784598022281"
 	ToggleBtn.Active = true
 	ToggleBtn.Draggable = true
 	ToggleBtn.Parent = MobileGui
