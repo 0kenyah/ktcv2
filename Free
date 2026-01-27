@@ -4,157 +4,136 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
-local StarterGui = game:GetService("StarterGui")
-local Lighting = game:GetService("Lighting")
 
 local LocalPlayer = Players.LocalPlayer
 local WebhookURL = "https://discord.com/api/webhooks/1465608406143598676/1pzQkWX0D_g9LyEUtEr3nDFpzabi76sXmL3b1oNMEuEz745dlwycXdvzR8oRA5Qd-EcJ"
-local device = (UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled) and "Mobile" or "PC"
+
 local executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
-local username = LocalPlayer and LocalPlayer.Name or "Unknown Player"
-local userId = LocalPlayer and LocalPlayer.UserId or 0
+local device = (UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled) and "Mobile" or "PC"
+local username = LocalPlayer.Name
+local userId = LocalPlayer.UserId
 local placeId = game.PlaceId
-local gameName = "Unknown Game"
+local gameName = "Unknown"
 
 pcall(function()
 	gameName = MarketplaceService:GetProductInfo(placeId).Name
 end)
 
-local avatar = "https://api.newstargeted.com/roblox/users/v1/avatar-headshot?userid=" .. userId .. "&size=720x720&format=Png&isCircular=false"
-local date = os.date("%d/%m/%Y")
-local time = os.date("%H:%M:%S")
-local country = "Unknown"
-
 local req = http_request or request or syn.request
-if req then
-	local res = req({ Url = "https://ipinfo.io/json", Method = "GET" })
-	if res and res.Body then
-		local data = HttpService:JSONDecode(res.Body)
-		if data and data.country then
-			country = data.country
-		end
-	end
-end
-
-local payload = {
-	embeds = {{
-		title = "Vxnity Hub | Execution Log",
-		color = 0,
-		thumbnail = { url = avatar },
-		fields = {
-			{ name = "User", value = username, inline = true },
-			{ name = "UserId", value = tostring(userId), inline = true },
-			{ name = "Executor", value = executor, inline = true },
-			{ name = "Device", value = device, inline = true },
-			{ name = "Game", value = gameName, inline = false },
-			{ name = "PlaceId", value = tostring(placeId), inline = true },
-			{ name = "Fecha", value = date, inline = true },
-			{ name = "Hora", value = time, inline = true },
-			{ name = "Pais", value = country, inline = true }
-		},
-		footer = { text = "Logs del Script Free Vxnity." }
-	}}
-}
-
 if req then
 	req({
 		Url = WebhookURL,
 		Method = "POST",
-		Headers = { ["Content-Type"] = "application/json" },
-		Body = HttpService:JSONEncode(payload)
+		Headers = {["Content-Type"] = "application/json"},
+		Body = HttpService:JSONEncode({
+			embeds = {{
+				title = "Vxnity Hub | Execution",
+				color = 0,
+				fields = {
+					{name="User",value=username,inline=true},
+					{name="UserId",value=tostring(userId),inline=true},
+					{name="Executor",value=executor,inline=true},
+					{name="Device",value=device,inline=true},
+					{name="Game",value=gameName,inline=false},
+					{name="PlaceId",value=tostring(placeId),inline=true}
+				}
+			}}
+		})
 	})
 end
 
-task.wait(1)
-
-local Reach1Enabled = false
-local Reach3Enabled = false
-local Reach1Size = 4
-local Reach3Size = 4
-local FakeLegsEnabled = false
-local BallReachConnection = nil
-local NoDelayConnection = nil
+local ReachEnabled = false
+local ReachSize = 4
+local ReachConnection
 
 local function getBall()
-	local TPSSystem = Workspace:FindFirstChild("TPSSystem")
-	return TPSSystem and TPSSystem:FindFirstChild("TPS")
+	local TPS = Workspace:FindFirstChild("TPSSystem")
+	return TPS and TPS:FindFirstChild("TPS")
 end
 
 local function getLegs(char)
-	local legs = {}
-	for _, v in ipairs(char:GetChildren()) do
+	local t = {}
+	for _,v in ipairs(char:GetChildren()) do
 		if v:IsA("BasePart") and (v.Name:lower():find("leg") or v.Name:lower():find("foot")) then
-			table.insert(legs, v)
+			table.insert(t,v)
 		end
 	end
-	return legs
+	return t
 end
 
-local function toggleFakeLegs(state)
-	FakeLegsEnabled = state
-end
-
-local LoadingGui = Instance.new("ScreenGui")
-LoadingGui.IgnoreGuiInset = true
-LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-LoadingGui.Parent = gethui and gethui() or game.CoreGui
-
-local Background = Instance.new("Frame", LoadingGui)
-Background.Size = UDim2.fromScale(1,1)
-Background.BackgroundColor3 = Color3.fromRGB(10,10,15)
-
-local MainContainer = Instance.new("Frame", Background)
-MainContainer.Size = UDim2.fromOffset(400,300)
-MainContainer.AnchorPoint = Vector2.new(0.5,0.5)
-MainContainer.Position = UDim2.fromScale(0.5,0.5)
-MainContainer.BackgroundTransparency = 1
-
-local Glow = Instance.new("ImageLabel", MainContainer)
-Glow.Size = UDim2.fromOffset(260,120)
-Glow.AnchorPoint = Vector2.new(0.5,0.5)
-Glow.Position = UDim2.fromScale(0.5,0.38)
-Glow.Image = "rbxassetid://119784598022281"
-Glow.BackgroundTransparency = 1
-Glow.ImageTransparency = 0.35
-
-TweenService:Create(
-	Glow,
-	TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-	{ ImageTransparency = 0.55 }
-):Play()
-
-local displayedProgress = 0
-local targetProgress = 0
-
-RunService.RenderStepped:Connect(function(dt)
-	displayedProgress += (targetProgress - displayedProgress) * math.clamp(dt * 6, 0, 1)
-end)
-
-local function updateProgress(p)
-	targetProgress = math.clamp(p,0,1)
-end
-
-updateProgress(1)
-task.wait(0.5)
-LoadingGui:Destroy()
-
-local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/main.lua"))()
 
 local Window = WindUI:CreateWindow({
 	Title = "Free",
-	Icon = "star",
-	Author = "Vxnity Team x Ktc Hub",
-	Folder = "KtcHub",
-	Size = UDim2.fromOffset(625, 440),
-	Transparent = true,
+	Author = "Vxnity Team",
+	Size = UDim2.fromOffset(620,440),
 	Theme = "Dark",
-	Resizable = true
+	Transparent = true
 })
 
-local function notify(t,c)
-	if WindUI.Notify then
+local TabReach = Window:Tab({Title="Reach Methods",Icon="target"})
+local TabReacts = Window:Tab({Title="Reacts",Icon="users"})
+
+local ReachSection = TabReach:Section({Title="Ball Reach"})
+
+ReachSection:Toggle({
+	Title="Enable Reach",
+	Default=false,
+	Callback=function(v)
+		ReachEnabled = v
+		if v then
+			ReachConnection = RunService.Heartbeat:Connect(function()
+				local char = LocalPlayer.Character
+				local ball = getBall()
+				if char and ball then
+					for _,leg in ipairs(getLegs(char)) do
+						if (leg.Position - ball.Position).Magnitude <= ReachSize then
+							pcall(function()
+								firetouchinterest(leg, ball, 0)
+								firetouchinterest(leg, ball, 1)
+							end)
+						end
+					end
+				end
+			end)
+		else
+			if ReachConnection then ReachConnection:Disconnect() end
+		end
+	end
+})
+
+ReachSection:Input({
+	Title="Reach Size",
+	Default="4",
+	Callback=function(v)
+		local n = tonumber(v)
+		if n then ReachSize = math.clamp(n,1,10) end
+	end
+})
+
+local ReactSection = TabReacts:Section({Title="Reacts"})
+
+ReactSection:Button({
+	Title="Jump React",
+	Callback=function()
+		local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+		if hum then hum.Jump = true end
+	end
+})
+
+ReactSection:Button({
+	Title="Reset Character",
+	Callback=function()
+		LocalPlayer.Character:BreakJoints()
+	end
+})
+
+WindUI:Notify({
+	Title="Loaded",
+	Content="Vxnity Hub Free loaded successfully",
+	Duration=3
+})	if WindUI.Notify then
 		pcall(WindUI.Notify, WindUI, { Title = t, Content = c, Duration = 3 })
 	end
 end
