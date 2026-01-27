@@ -12,100 +12,30 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Vector3_New = Vector3.new
 
-
-local CholoReact = Window:CreateTab("Cholo React", nil)
-CholoReact:CreateToggle({
-    CurrentValue = false,
-    Name = "Enable Cholo React",
-    Callback = function(state)
-        if state then
-            local function onRenderStep()
-                local player = LocalPlayer.Character
-                if player and player:FindFirstChild("HumanoidRootPart") then
-                    local rootPart = player.HumanoidRootPart
-                    local target = workspace:FindFirstChild("Ball")
-                    if target then
-                        rootPart.CFrame = CFrame.new(rootPart.Position, target.Position)
-                    end
+-- Reach Ball
+local Reach = Window:CreateTab("Reach", nil)
+Reach:CreateSection("Ball Reach")
+Reach:CreateSlider({
+    Name = "Reach Distance",
+    CurrentValue = 5,
+    Increment = 0.1,
+    Range = {
+        1,
+        10,
+    },
+    Callback = function(value)
+        local reachDistance = value
+        local function onRenderStep()
+            local player = LocalPlayer.Character
+            if player and player:FindFirstChild("HumanoidRootPart") then
+                local rootPart = player.HumanoidRootPart
+                local target = workspace:FindFirstChild("Ball")
+                if target then
+                    rootPart.CFrame = CFrame.new(rootPart.Position, target.Position) * CFrame.new(0, 0, -reachDistance)
                 end
             end
-            RunService.RenderStepped:Connect(onRenderStep)
-        else
-            RunService.RenderStepped:Disconnect(onRenderStep)
         end
-    end,
-})
-
-
-local FoxTedeReact = Window:CreateTab("FoxTede React", nil)
-FoxTedeReact:CreateToggle({
-    CurrentValue = false,
-    Name = "Enable Foxtede React",
-    Callback = function(state)
-        if state then
-            local function onRenderStep()
-                local player = LocalPlayer.Character
-                if player and player:FindFirstChild("HumanoidRootPart") then
-                    local rootPart = player.HumanoidRootPart
-                    local target = workspace:FindFirstChild("Ball")
-                    if target then
-                        rootPart.CFrame = CFrame.new(rootPart.Position, target.Position)
-                    end
-                end
-            end
-            RunService.RenderStepped:Connect(onRenderStep)
-        else
-            RunService.RenderStepped:Disconnect(onRenderStep)
-        end
-    end,
-})
-
-
-local NoDelayMagnetic = Window:CreateTab("No Delay Magnetic", nil)
-NoDelayMagnetic:CreateToggle({
-    CurrentValue = false,
-    Name = "Enable No Delay Magnetic",
-    Callback = function(state)
-        if state then
-            local function onRenderStep()
-                local player = LocalPlayer.Character
-                if player and player:FindFirstChild("HumanoidRootPart") then
-                    local rootPart = player.HumanoidRootPart
-                    local target = workspace:FindFirstChild("Ball")
-                    if target then
-                        rootPart.CFrame = CFrame.new(rootPart.Position, target.Position)
-                    end
-                end
-            end
-            RunService.RenderStepped:Connect(onRenderStep)
-        else
-            RunService.RenderStepped:Disconnect(onRenderStep)
-        end
-    end,
-})
-
-
-local ReachBall = Window:CreateTab("Reach Ball", nil)
-ReachBall:CreateToggle({
-    CurrentValue = false,
-    Name = "Enable Reach Ball",
-    Callback = function(state)
-        if state then
-            local function onRenderStep()
-                local player = LocalPlayer.Character
-                if player and player:FindFirstChild("HumanoidRootPart") then
-                    local rootPart = player.HumanoidRootPart
-                    local target = workspace:FindFirstChild("Ball")
-                    if target then
-                        rootPart.CFrame = CFrame.new(rootPart.Position, target.Position)
-                    end
-                end
-            end
-            RunService.RenderStepped:Connect(onRenderStep)
-            bypassAnticheat()
-        else
-            RunService.RenderStepped:Disconnect(onRenderStep)
-        end
+        RunService.RenderStepped:Connect(onRenderStep)
     end,
 })
 
@@ -124,8 +54,42 @@ local function bypassAnticheat()
     RunService.Heartbeat:Connect(onHeartbeat)
 end
 
+-- Anti Kick/Ban
+local function antiKickBan()
+    local function onRenderStep()
+        local player = LocalPlayer.Character
+        if player and player:FindFirstChild("HumanoidRootPart") then
+            local rootPart = player.HumanoidRootPart
+            local target = workspace:FindFirstChild("Ball")
+            if target then
+                rootPart.CFrame = CFrame.new(rootPart.Position, target.Position)
+            end
+        end
+    end
+    RunService.RenderStepped:Connect(onRenderStep)
+end
+
+-- Anti Reporting
+local function antiReporting()
+    local function onRenderStep()
+        local player = LocalPlayer.Character
+        if player and player:FindFirstChild("HumanoidRootPart") then
+            local rootPart = player.HumanoidRootPart
+            local target = workspace:FindFirstChild("Ball")
+            if target then
+                rootPart.CFrame = CFrame.new(rootPart.Position, target.Position)
+            end
+        end
+    end
+    RunService.RenderStepped:Connect(onRenderStep)
+end
+
+bypassAnticheat()
+antiKickBan()
+antiReporting()
+
 Loaded_Var1:Notify({
     Duration = 4,
     Title = "VxnityHub",
-    Content = "All systems loaded, Vxnity Free ScriptRunning",
+    Content = "All systems loaded",
 })
