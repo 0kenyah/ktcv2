@@ -2,34 +2,34 @@ local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local StarterGui = game:GetService("StarterGui")
+local Lighting = game:GetService("Lighting")
 
 local LocalPlayer = Players.LocalPlayer
-local WebhookURL = "https://discord.com/api/webhooks/1464923263443402886/AMqNuy3ujxdQalbS9-bf6aRpanpJqMoWIFKtpM1JOPWCMspDsb_135CPca1UsLg0bYlg"
-
+local WebhookURL = "https://discord.com/api/webhooks/1465608406143598676/1pzQkWX0D_g9LyEUtEr3nDFpzabi76sXmL3b1oNMEuEz745dlwycXdvzR8oRA5Qd-EcJ"
 local device = (UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled) and "Mobile" or "PC"
 local executor = (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or "Unknown"
-local username = (LocalPlayer and LocalPlayer.Name) or "Unknown Player"
-local userId = (LocalPlayer and LocalPlayer.UserId) or 0
+local username = LocalPlayer and LocalPlayer.Name or "Unknown Player"
+local userId = LocalPlayer and LocalPlayer.UserId or 0
 local placeId = game.PlaceId
 local gameName = "Unknown Game"
+
 pcall(function()
 	gameName = MarketplaceService:GetProductInfo(placeId).Name
 end)
 
 local avatar = "https://api.newstargeted.com/roblox/users/v1/avatar-headshot?userid=" .. userId .. "&size=720x720&format=Png&isCircular=false"
-
 local date = os.date("%d/%m/%Y")
 local time = os.date("%H:%M:%S")
-
 local country = "Unknown"
 
 local req = http_request or request or syn.request
 if req then
-	local res = req({
-		Url = "https://ipinfo.io/json",
-		Method = "GET"
-	})
-
+	local res = req({ Url = "https://ipinfo.io/json", Method = "GET" })
 	if res and res.Body then
 		local data = HttpService:JSONDecode(res.Body)
 		if data and data.country then
@@ -39,28 +39,25 @@ if req then
 end
 
 local payload = {
-	embeds = {
-		{
-			title = "Vxnity Hub | Execution Log",
-			color = 0,
-			thumbnail = { url = avatar },
-			fields = {
-				{ name = "User", value = username, inline = true },
-				{ name = "UserId", value = tostring(userId), inline = true },
-				{ name = "Executor", value = executor, inline = true },
-				{ name = "Device", value = device, inline = true },
-				{ name = "Game", value = gameName, inline = false },
-				{ name = "PlaceId", value = tostring(placeId), inline = true },
-				{ name = "Fecha", value = date, inline = true },
-				{ name = "Hora", value = time, inline = true },
-				{ name = "Pais", value = country, inline = true }
-			},
-			footer = { text = "Logs del Script Free Vxnity." }
-		}
-	}
+	embeds = {{
+		title = "Vxnity Hub | Execution Log",
+		color = 0,
+		thumbnail = { url = avatar },
+		fields = {
+			{ name = "User", value = username, inline = true },
+			{ name = "UserId", value = tostring(userId), inline = true },
+			{ name = "Executor", value = executor, inline = true },
+			{ name = "Device", value = device, inline = true },
+			{ name = "Game", value = gameName, inline = false },
+			{ name = "PlaceId", value = tostring(placeId), inline = true },
+			{ name = "Fecha", value = date, inline = true },
+			{ name = "Hora", value = time, inline = true },
+			{ name = "Pais", value = country, inline = true }
+		},
+		footer = { text = "Logs del Script Free Vxnity." }
+	}}
 }
 
-local req = http_request or request or syn.request
 if req then
 	req({
 		Url = WebhookURL,
@@ -70,40 +67,138 @@ if req then
 	})
 end
 
-
 task.wait(1)
 
-local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
+local Reach1Enabled = false
+local Reach3Enabled = false
+local Reach1Size = 4
+local Reach3Size = 4
+local FakeLegsEnabled = false
+local BallReachConnection = nil
+local NoDelayConnection = nil
+
+local function getBall()
+	local TPSSystem = Workspace:FindFirstChild("TPSSystem")
+	return TPSSystem and TPSSystem:FindFirstChild("TPS")
+end
+
+local function getLegs(char)
+	local legs = {}
+	for _, v in ipairs(char:GetChildren()) do
+		if v:IsA("BasePart") and (v.Name:lower():find("leg") or v.Name:lower():find("foot")) then
+			table.insert(legs, v)
+		end
+	end
+	return legs
+end
+
+local function toggleFakeLegs(state)
+	FakeLegsEnabled = state
+end
+
 local LoadingGui = Instance.new("ScreenGui")
-LoadingGui.Name = "WindUILoading"
 LoadingGui.IgnoreGuiInset = true
 LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+LoadingGui.Parent = gethui and gethui() or game.CoreGui
 
-local success, parent = pcall(function()
-	return gethui and gethui() or game:GetService("CoreGui")
+local Background = Instance.new("Frame", LoadingGui)
+Background.Size = UDim2.fromScale(1,1)
+Background.BackgroundColor3 = Color3.fromRGB(10,10,15)
+
+local MainContainer = Instance.new("Frame", Background)
+MainContainer.Size = UDim2.fromOffset(400,300)
+MainContainer.AnchorPoint = Vector2.new(0.5,0.5)
+MainContainer.Position = UDim2.fromScale(0.5,0.5)
+MainContainer.BackgroundTransparency = 1
+
+local Glow = Instance.new("ImageLabel", MainContainer)
+Glow.Size = UDim2.fromOffset(260,120)
+Glow.AnchorPoint = Vector2.new(0.5,0.5)
+Glow.Position = UDim2.fromScale(0.5,0.38)
+Glow.Image = "rbxassetid://119784598022281"
+Glow.BackgroundTransparency = 1
+Glow.ImageTransparency = 0.35
+
+TweenService:Create(
+	Glow,
+	TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+	{ ImageTransparency = 0.55 }
+):Play()
+
+local displayedProgress = 0
+local targetProgress = 0
+
+RunService.RenderStepped:Connect(function(dt)
+	displayedProgress += (targetProgress - displayedProgress) * math.clamp(dt * 6, 0, 1)
 end)
-if not success or not parent then
-	parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+
+local function updateProgress(p)
+	targetProgress = math.clamp(p,0,1)
 end
-LoadingGui.Parent = parent
 
-local Background = Instance.new("Frame")
-Background.Name = "Background"
-Background.Size = UDim2.fromScale(1, 1)
-Background.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-Background.BorderSizePixel = 0
-Background.Parent = LoadingGui
+updateProgress(1)
+task.wait(0.5)
+LoadingGui:Destroy()
 
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(10, 10, 20)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 5, 10))
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+local Window = WindUI:CreateWindow({
+	Title = "Free",
+	Icon = "star",
+	Author = "Vxnity Team x Ktc Hub",
+	Folder = "KtcHub",
+	Size = UDim2.fromOffset(625, 440),
+	Transparent = true,
+	Theme = "Dark",
+	Resizable = true
 })
-UIGradient.Rotation = 45
-UIGradient.Parent = Background
 
-local MainContainer = Instance.new("Frame")
+local function notify(t,c)
+	if WindUI.Notify then
+		pcall(WindUI.Notify, WindUI, { Title = t, Content = c, Duration = 3 })
+	end
+end
+
+local TabImportant = Window:Tab({ Title = "Important", Icon = "book" })
+local TabReach = Window:Tab({ Title = "Reach Methods", Icon = "arrow-up-right" })
+local TabReacts = Window:Tab({ Title = "Reacts", Icon = "users" })
+
+local SectionReach = TabReach:Section({ Title = "Ball Reach" })
+
+SectionReach:Toggle({
+	Title = "Enable Ball Reach",
+	Default = false,
+	Callback = function(v)
+		Reach3Enabled = v
+		if v then
+			BallReachConnection = RunService.Heartbeat:Connect(function()
+				local char = LocalPlayer.Character
+				local ball = getBall()
+				if char and ball then
+					for _, leg in ipairs(getLegs(char)) do
+						if (leg.Position - ball.Position).Magnitude <= Reach3Size then
+							firetouchinterest(leg, ball, 0)
+							firetouchinterest(leg, ball, 1)
+						end
+					end
+				end
+			end)
+		else
+			if BallReachConnection then BallReachConnection:Disconnect() end
+		end
+	end
+})
+
+SectionReach:Input({
+	Title = "Reach Size",
+	Default = "4",
+	Callback = function(v)
+		local n = tonumber(v)
+		if n then Reach3Size = math.clamp(n,1,10) end
+	end
+})
+
+notify("Success","WindUI Hub loaded successfully")local MainContainer = Instance.new("Frame")
 MainContainer.Name = "MainContainer"
 MainContainer.Size = UDim2.fromOffset(400, 300)
 MainContainer.AnchorPoint = Vector2.new(0.5, 0.5)
