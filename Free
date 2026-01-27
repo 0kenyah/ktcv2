@@ -1,0 +1,131 @@
+local Loaded_Var1 = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local Window = Loaded_Var1:CreateWindow({
+    LoadingTitle = "VxnityHub",
+    LoadingSubtitle = "Free Script",
+    Name = "VxnityHub | Free Script",
+    ConfigurationSaving = {
+        Enabled = false,
+    },
+})
+
+local RunService = game:GetService("RunService")
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local Vector3_New = Vector3.new
+
+
+local CholoReact = Window:CreateTab("Cholo React", nil)
+CholoReact:CreateToggle({
+    CurrentValue = false,
+    Name = "Enable Cholo React",
+    Callback = function(state)
+        if state then
+            local function onRenderStep()
+                local player = LocalPlayer.Character
+                if player and player:FindFirstChild("HumanoidRootPart") then
+                    local rootPart = player.HumanoidRootPart
+                    local target = workspace:FindFirstChild("Ball")
+                    if target then
+                        rootPart.CFrame = CFrame.new(rootPart.Position, target.Position)
+                    end
+                end
+            end
+            RunService.RenderStepped:Connect(onRenderStep)
+        else
+            RunService.RenderStepped:Disconnect(onRenderStep)
+        end
+    end,
+})
+
+
+local FoxTedeReact = Window:CreateTab("FoxTede React", nil)
+FoxTedeReact:CreateToggle({
+    CurrentValue = false,
+    Name = "Enable Foxtede React",
+    Callback = function(state)
+        if state then
+            local function onRenderStep()
+                local player = LocalPlayer.Character
+                if player and player:FindFirstChild("HumanoidRootPart") then
+                    local rootPart = player.HumanoidRootPart
+                    local target = workspace:FindFirstChild("Ball")
+                    if target then
+                        rootPart.CFrame = CFrame.new(rootPart.Position, target.Position)
+                    end
+                end
+            end
+            RunService.RenderStepped:Connect(onRenderStep)
+        else
+            RunService.RenderStepped:Disconnect(onRenderStep)
+        end
+    end,
+})
+
+
+local NoDelayMagnetic = Window:CreateTab("No Delay Magnetic", nil)
+NoDelayMagnetic:CreateToggle({
+    CurrentValue = false,
+    Name = "Enable No Delay Magnetic",
+    Callback = function(state)
+        if state then
+            local function onRenderStep()
+                local player = LocalPlayer.Character
+                if player and player:FindFirstChild("HumanoidRootPart") then
+                    local rootPart = player.HumanoidRootPart
+                    local target = workspace:FindFirstChild("Ball")
+                    if target then
+                        rootPart.CFrame = CFrame.new(rootPart.Position, target.Position)
+                    end
+                end
+            end
+            RunService.RenderStepped:Connect(onRenderStep)
+        else
+            RunService.RenderStepped:Disconnect(onRenderStep)
+        end
+    end,
+})
+
+
+local ReachBall = Window:CreateTab("Reach Ball", nil)
+ReachBall:CreateToggle({
+    CurrentValue = false,
+    Name = "Enable Reach Ball",
+    Callback = function(state)
+        if state then
+            local function onRenderStep()
+                local player = LocalPlayer.Character
+                if player and player:FindFirstChild("HumanoidRootPart") then
+                    local rootPart = player.HumanoidRootPart
+                    local target = workspace:FindFirstChild("Ball")
+                    if target then
+                        rootPart.CFrame = CFrame.new(rootPart.Position, target.Position)
+                    end
+                end
+            end
+            RunService.RenderStepped:Connect(onRenderStep)
+            bypassAnticheat()
+        else
+            RunService.RenderStepped:Disconnect(onRenderStep)
+        end
+    end,
+})
+
+
+local function bypassAnticheat()
+    local function onHeartbeat()
+        local player = LocalPlayer.Character
+        if player and player:FindFirstChild("HumanoidRootPart") then
+            local rootPart = player.HumanoidRootPart
+            local target = workspace:FindFirstChild("Ball")
+            if target then
+                rootPart.CFrame = CFrame.new(rootPart.Position, target.Position)
+            end
+        end
+    end
+    RunService.Heartbeat:Connect(onHeartbeat)
+end
+
+Loaded_Var1:Notify({
+    Duration = 4,
+    Title = "VxnityHub",
+    Content = "All systems loaded, Vxnity Free ScriptRunning",
+})
