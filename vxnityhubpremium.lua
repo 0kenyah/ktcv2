@@ -1569,7 +1569,7 @@ addToggle(
                 if TouchConn then TouchConn:Disconnect() end
                 TouchConn = ball.Touched:Connect(function(hit)
                     if hit:IsDescendantOf(LocalPlayer.Character) then
-                        TouchCount += 1
+                        TouchCount += 3
                     end
                 end)
             end)
@@ -1585,12 +1585,12 @@ addToggle(
                     ball.AssemblyLinearVelocity = Vector3.zero
                     ball.AssemblyAngularVelocity = Vector3.zero
 
-                    local forward = 1.23
+                    local forward = 5.23
                     local down = hrp.Size.Y / 2 + 2.5
 
                     local targetPos =
                         hrp.Position
-                        + hrp.CFrame.LookVector * 5.10
+                        + hrp.CFrame.LookVector * 40.10
                         - hrp.CFrame.LookVector * forward
                         - Vector3.new(0, down, 0)
 
@@ -1629,7 +1629,7 @@ addToggle(
 		SectionFoxtede,
 		"Foxtede React",
 		false,
-		"Continuously apply Velocity (150, 150, 110)",
+		"Continuously apply Velocity (1500, 1500, 1100)",
 		function(value)
 			if value then
 				if FoxtedeReactConnection then FoxtedeReactConnection:Disconnect() end
@@ -1640,7 +1640,7 @@ addToggle(
 						local Character = Players.LocalPlayer.Character
 						local Root = Character and Character:FindFirstChild("HumanoidRootPart")
 						if Root and (Root.Position - TPS.Position).Magnitude < 15 then
-							TPS.Velocity = Vector3.new(150, 150, 110)
+							TPS.Velocity = Vector3.new(1500, 1500, 1100)
 						end
 					end
 				end)
@@ -1703,10 +1703,10 @@ addToggle(
 				local dir = (Root.Position - TPS.Position).Unit
 				local dist = (Root.Position - TPS.Position).Magnitude
 
-				if dist < 10 then
+				if dist < 50 then
 					TPS.Velocity =
 						(dir * 420) +
-						Vector3.new(0, 360, 0)
+						Vector3.new(1333, 3640, 2924)
 				end
 			end)
 
@@ -1749,16 +1749,16 @@ do
 
 				if ball and hrp then
 					local dist = (ball.Position - hrp.Position).Magnitude
-					if dist < 6 then
+					if dist < 50 then
 						if sethiddenproperty then
 							pcall(sethiddenproperty, ball, "NetworkIsSleeping", false)
 						end
 
 						local dir = ball.Velocity.Magnitude > 1 and ball.Velocity.Unit or hrp.CFrame.LookVector
-						local frontPos = hrp.Position + dir * 2.4
+						local frontPos = hrp.Position + dir * 9.4
 						local pullDir = (frontPos - ball.Position).Unit
 
-						ball.Velocity = ball.Velocity + (pullDir * 7)
+						ball.Velocity = ball.Velocity + (pullDir * 20)
 					end
 				end
 			end)
@@ -1798,18 +1798,18 @@ do
 	function(value)
 		if value then
 			AutoReactRange = 9
-			ReactVelocity = 4000
+			ReactVelocity = 40000
 	
 			ReactTickRate = 0
 			FrontReact = true
-			FrontOffset = 8.0
+			FrontOffset = 30.0
 			InstantTouchCount = true
 			SkillBoost = true
-			SkillSpeed = 70
+			SkillSpeed = 600
 			notify("Reacts", "Kenyah React  OP Loaded")
 		else
 			AutoReactRange = 6.4
-			ReactVelocity = 2500
+			ReactVelocity = 29600
 			ReactTickRate = 0.10
 			FrontReact = false
 			FrontOffset = 0
